@@ -1,0 +1,8 @@
+D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.WebApp\obj\Debug\net7.0\rpswa.dswa.cache.json
+D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.WebApp\obj\Debug\net7.0\MyApp.WebApp.GeneratedMSBuildEditorConfig.editorconfig
+D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.WebApp\obj\Debug\net7.0\MyApp.WebApp.AssemblyInfoInputs.cache
+D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.WebApp\obj\Debug\net7.0\MyApp.WebApp.AssemblyInfo.cs
+D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.WebApp\obj\Debug\net7.0\MyApp.WebApp.csproj.CoreCompileInputs.cache
+D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.WebApp\obj\Debug\net7.0\MyApp.WebApp.MvcApplicationPartsAssemblyInfo.cache
+D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.WebApp\obj\Debug\net7.0\MyApp.WebApp.RazorAssemblyInfo.cache
+D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.WebApp\obj\Debug\net7.0\MyApp.WebApp.RazorAssemblyInfo.cs

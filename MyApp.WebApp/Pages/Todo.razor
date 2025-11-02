@@ -1,0 +1,37 @@
+﻿@attribute [Authorize]
+@page "/todos"
+@using MyApp.Persistence
+@using MyApp.WebApp.Components
+@inject ITodoClient Client
+
+<h3>Todos</h3>
+
+<AddTodoForm OnTodoAdded="LoadTodos" />
+
+@if (todos is null)
+{
+    <p>Loading ...</p>
+}
+else
+{
+    <ul>
+        @foreach (var todo in todos)
+        {
+            <li>@todo.Title</li>
+        }
+    </ul>
+}
+
+@code {
+    private List<TodoItem>? todos;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadTodos();
+    }
+
+    private async Task LoadTodos()
+    {
+        todos = await Client.GetTodoItemsAsync();
+    }
+}

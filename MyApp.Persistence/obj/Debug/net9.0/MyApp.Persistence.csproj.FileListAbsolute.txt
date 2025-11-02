@@ -1,0 +1,12 @@
+D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.Persistence\bin\Debug\net9.0\MyApp.Persistence.deps.json
+D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.Persistence\bin\Debug\net9.0\MyApp.Persistence.dll
+D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.Persistence\bin\Debug\net9.0\MyApp.Persistence.pdb
+D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.Persistence\obj\Debug\net9.0\MyApp.Persistence.csproj.AssemblyReference.cache
+D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.Persistence\obj\Debug\net9.0\MyApp.Persistence.GeneratedMSBuildEditorConfig.editorconfig
+D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.Persistence\obj\Debug\net9.0\MyApp.Persistence.AssemblyInfoInputs.cache
+D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.Persistence\obj\Debug\net9.0\MyApp.Persistence.AssemblyInfo.cs
+D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.Persistence\obj\Debug\net9.0\MyApp.Persistence.csproj.CoreCompileInputs.cache
+D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.Persistence\obj\Debug\net9.0\MyApp.Persistence.dll
+D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.Persistence\obj\Debug\net9.0\refint\MyApp.Persistence.dll
+D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.Persistence\obj\Debug\net9.0\MyApp.Persistence.pdb
+D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.Persistence\obj\Debug\net9.0\ref\MyApp.Persistence.dll

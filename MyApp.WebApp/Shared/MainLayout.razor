@@ -1,0 +1,39 @@
+@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+
+<PageTitle>MyApp.WebApp</PageTitle>
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        <div class="top-row px-4">
+            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+            <button type="button" class="btn btn-link" @onclick="SignOut">Sign out</button>
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+
+@code {
+    private void SignOut()
+    {
+        var relative = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+        if (string.IsNullOrEmpty(relative))
+        {
+            relative = "/";
+        }
+        else if (!relative.StartsWith("/"))
+        {
+            relative = "/" + relative;
+        }
+
+        var returnUrl = System.Uri.EscapeDataString(relative);
+        NavigationManager.NavigateTo($"/authentication/logout?returnUrl={returnUrl}", forceLoad: true);
+    }
+}

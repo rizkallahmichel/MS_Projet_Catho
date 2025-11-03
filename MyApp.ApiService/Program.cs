@@ -1,15 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
+using MyApp.ApiService.Middlewares;
+using MyApp.Application;
 using MyApp.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.AddServiceDefaults();  // adds logging, health, OTEL
+builder.AddServiceDefaults();
 builder.AddSqlServerDbContext<MyAppDbContext>(connectionName: "myapp");
+
+builder.Services
+    .AddApplication()
+    .AddPersistenceLayer();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
@@ -24,7 +27,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
             NameClaimType = "name",
-            RoleClaimType = "role",
+            RoleClaimType = "role"
         };
         options.MapInboundClaims = false;
         options.Events = new JwtBearerEvents
@@ -38,7 +41,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             OnChallenge = context =>
             {
                 var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
-                logger.LogWarning("JWT challenge for {Path}. Error: {Error}. Description: {Description}", context.HttpContext.Request.Path, context.Error, context.ErrorDescription);
+                logger.LogWarning(
+                    "JWT challenge for {Path}. Error: {Error}. Description: {Description}",
+                    context.HttpContext.Request.Path,
+                    context.Error,
+                    context.ErrorDescription);
                 return Task.CompletedTask;
             }
         };
@@ -51,14 +58,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-app.MapDefaultEndpoints();     // adds health endpoints, etc.
+app.MapDefaultEndpoints();
 
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<MyAppDbContext>();
-    await db.Database.EnsureCreatedAsync();
+    await db.Database.MigrateAsync();
 }
-
 
 if (app.Environment.IsDevelopment())
 {
@@ -66,17 +72,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseApiExceptionHandling();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapGet("/api/todo", [Authorize] async (MyAppDbContext db) => await db.TodoItems.ToListAsync());
-
-app.MapPost("/api/todo", [Authorize] async (TodoItem item, MyAppDbContext db) =>
-{
-    db.TodoItems.Add(item);
-    await db.SaveChangesAsync();
-    return Results.Created($"/api/todo/{item.Id}", item);
-});
-
 app.MapControllers();
+
 app.Run();

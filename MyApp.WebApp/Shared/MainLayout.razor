@@ -1,7 +1,7 @@
 @inherits LayoutComponentBase
 @inject NavigationManager NavigationManager
 
-<PageTitle>MyApp.WebApp</PageTitle>
+<PageTitle>Pharmacy CMS</PageTitle>
 
 <div class="page">
     <div class="sidebar">
@@ -10,8 +10,16 @@
 
     <main>
         <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-            <button type="button" class="btn btn-link" @onclick="SignOut">Sign out</button>
+            <div class="ms-auto d-flex align-items-center gap-3">
+                <div class="text-end">
+                    <div class="fw-semibold">@displayName</div>
+                    <div class="small text-muted">@roleSummary</div>
+                </div>
+                <button type="button" class="btn btn-outline-secondary btn-sm" @onclick="SignOut">
+                    <span class="oi oi-account-logout me-1" aria-hidden="true"></span>
+                    Sign out
+                </button>
+            </div>
         </div>
 
         <article class="content px-4">
@@ -21,6 +29,44 @@
 </div>
 
 @code {
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
+
+    private string displayName = "Loading user...";
+    private string roleSummary = string.Empty;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (AuthenticationStateTask is null)
+        {
+            return;
+        }
+
+        var authState = await AuthenticationStateTask;
+        var user = authState.User;
+
+        if (user.Identity?.IsAuthenticated == true)
+        {
+            displayName = user.Identity.Name
+                ?? user.FindFirst("name")?.Value
+                ?? user.FindFirst("preferred_username")?.Value
+                ?? "Authenticated user";
+
+            var roles = user.FindAll("role").Select(claim => claim.Value).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+            roleSummary = roles.Count switch
+            {
+                0 => "Authenticated user",
+                1 => roles[0],
+                _ => string.Join(", ", roles)
+            };
+        }
+        else
+        {
+            displayName = "Guest";
+            roleSummary = "Not signed in";
+        }
+    }
+
     private void SignOut()
     {
         var relative = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);

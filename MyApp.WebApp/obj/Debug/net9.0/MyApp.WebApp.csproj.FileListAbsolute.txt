@@ -127,4 +127,7 @@ D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.WebApp\bin\Debug\net9.0\runtimes\win\
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.WebApp\bin\Debug\net9.0\MyApp.Persistence.dll
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.WebApp\bin\Debug\net9.0\MyApp.Persistence.pdb
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.WebApp\bin\Debug\net9.0\Microsoft.AspNetCore.Authentication.OpenIdConnect.dll
+D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.WebApp\bin\Debug\net9.0\MyApp.Domain.dll
+D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.WebApp\bin\Debug\net9.0\MyApp.Domain.pdb
+D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.WebApp\obj\Debug\net9.0\MyApp.WebApp.sourcelink.json
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.WebApp\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt

@@ -174,3 +174,4 @@ D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.AppHost\bin\Debug\net9.0\runtimes\win
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.AppHost\bin\Debug\net9.0\init.sql
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.AppHost\obj\Debug\net9.0\Aspire\references\MyApp_WebApp.ProjectMetadata.g.cs
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.AppHost\bin\Debug\net9.0\Aspire.Hosting.Keycloak.dll
+D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.AppHost\obj\Debug\net9.0\MyApp.AppHost.sourcelink.json

@@ -10,3 +10,4 @@ D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ServiceDefaults\obj\Debug\net9.0\MyAp
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ServiceDefaults\obj\Debug\net9.0\refint\MyApp.ServiceDefaults.dll
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ServiceDefaults\obj\Debug\net9.0\MyApp.ServiceDefaults.pdb
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ServiceDefaults\obj\Debug\net9.0\ref\MyApp.ServiceDefaults.dll
+D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ServiceDefaults\obj\Debug\net9.0\MyApp.ServiceDefaults.sourcelink.json

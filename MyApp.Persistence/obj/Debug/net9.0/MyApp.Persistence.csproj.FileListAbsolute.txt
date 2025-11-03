@@ -10,3 +10,9 @@ D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.Persistence\obj\Debug\net9.0\MyApp.Pe
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.Persistence\obj\Debug\net9.0\refint\MyApp.Persistence.dll
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.Persistence\obj\Debug\net9.0\MyApp.Persistence.pdb
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.Persistence\obj\Debug\net9.0\ref\MyApp.Persistence.dll
+D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.Persistence\bin\Debug\net9.0\MyApp.Domain.dll
+D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.Persistence\bin\Debug\net9.0\MyApp.Domain.pdb
+D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.Persistence\obj\Debug\net9.0\MyApp.Persistence.sourcelink.json
+D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.Persistence\obj\Debug\net9.0\MyApp.Pe.9F7D46B2.Up2Date
+D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.Persistence\bin\Debug\net9.0\MyApp.Persistence.runtimeconfig.json
+D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.Persistence\obj\Debug\net9.0\MyApp.Persistence.genruntimeconfig.cache

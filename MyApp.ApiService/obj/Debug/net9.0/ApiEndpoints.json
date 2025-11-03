@@ -1,42 +1,351 @@
 [
   {
-    "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_1",
-    "RelativePath": "api/todo",
+    "ContainingType": "MyApp.ApiService.Controllers.PharmaciesController",
+    "Method": "GetPharmacies",
+    "RelativePath": "api/pharmacies",
     "HttpMethod": "GET",
-    "IsController": false,
+    "IsController": true,
     "Order": 0,
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.List\u00601[[MyApp.Persistence.TodoItem, MyApp.Persistence, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IReadOnlyList\u00601[[MyApp.Application.Pharmacies.Queries.GetPharmacies.PharmacySummaryDto, MyApp.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
-          "application/json"
+          "text/plain",
+          "application/json",
+          "text/json"
         ],
         "StatusCode": 200
       }
     ]
   },
   {
-    "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_2",
-    "RelativePath": "api/todo",
+    "ContainingType": "MyApp.ApiService.Controllers.PharmaciesController",
+    "Method": "CreatePharmacy",
+    "RelativePath": "api/pharmacies",
     "HttpMethod": "POST",
-    "IsController": false,
+    "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "item",
-        "Type": "MyApp.Persistence.TodoItem",
+        "Name": "request",
+        "Type": "MyApp.ApiService.Contracts.Pharmacies.CreatePharmacyRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.ApiService.Controllers.PharmaciesController",
+    "Method": "GetPharmacyById",
+    "RelativePath": "api/pharmacies/{pharmacyId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pharmacyId",
+        "Type": "System.Guid",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Void",
-        "MediaTypes": [],
+        "Type": "MyApp.Application.Pharmacies.Queries.GetPharmacyById.PharmacyDetailsDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "MyApp.ApiService.Controllers.PharmaciesController",
+    "Method": "UpdatePharmacy",
+    "RelativePath": "api/pharmacies/{pharmacyId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pharmacyId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "MyApp.ApiService.Contracts.Pharmacies.UpdatePharmacyRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.ApiService.Controllers.PharmaciesController",
+    "Method": "DeletePharmacy",
+    "RelativePath": "api/pharmacies/{pharmacyId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pharmacyId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.ApiService.Controllers.PharmacyCategoriesController",
+    "Method": "GetCategories",
+    "RelativePath": "api/pharmacies/{pharmacyId}/categories",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pharmacyId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IReadOnlyList\u00601[[MyApp.Application.Common.Models.CategoryDto, MyApp.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyApp.ApiService.Controllers.PharmacyCategoriesController",
+    "Method": "CreateCategory",
+    "RelativePath": "api/pharmacies/{pharmacyId}/categories",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pharmacyId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "MyApp.ApiService.Contracts.Categories.CreateCategoryRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.ApiService.Controllers.PharmacyCategoriesController",
+    "Method": "UpdateCategory",
+    "RelativePath": "api/pharmacies/{pharmacyId}/categories/{categoryId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pharmacyId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "categoryId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "MyApp.ApiService.Contracts.Categories.UpdateCategoryRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.ApiService.Controllers.PharmacyCategoriesController",
+    "Method": "DeleteCategory",
+    "RelativePath": "api/pharmacies/{pharmacyId}/categories/{categoryId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pharmacyId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "categoryId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.ApiService.Controllers.PharmacyOrdersController",
+    "Method": "GetOrderHistory",
+    "RelativePath": "api/pharmacies/{pharmacyId}/orders",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pharmacyId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IReadOnlyList\u00601[[MyApp.Application.Common.Models.OrderSummaryDto, MyApp.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyApp.ApiService.Controllers.PharmacyPaymentsController",
+    "Method": "GetPayments",
+    "RelativePath": "api/pharmacies/{pharmacyId}/payments",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pharmacyId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "orderId",
+        "Type": "System.Nullable\u00601[[System.Guid, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IReadOnlyList\u00601[[MyApp.Application.Common.Models.PaymentDto, MyApp.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyApp.ApiService.Controllers.PharmacyProductsController",
+    "Method": "GetProducts",
+    "RelativePath": "api/pharmacies/{pharmacyId}/products",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pharmacyId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "categoryId",
+        "Type": "System.Nullable\u00601[[System.Guid, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IReadOnlyList\u00601[[MyApp.Application.Common.Models.ProductDto, MyApp.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyApp.ApiService.Controllers.PharmacyProductsController",
+    "Method": "CreateProduct",
+    "RelativePath": "api/pharmacies/{pharmacyId}/products",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pharmacyId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "MyApp.ApiService.Contracts.Products.CreateProductRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.ApiService.Controllers.PharmacyProductsController",
+    "Method": "UpdateProduct",
+    "RelativePath": "api/pharmacies/{pharmacyId}/products/{productId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pharmacyId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "productId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "MyApp.ApiService.Contracts.Products.UpdateProductRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.ApiService.Controllers.PharmacyProductsController",
+    "Method": "DeleteProduct",
+    "RelativePath": "api/pharmacies/{pharmacyId}/products/{productId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pharmacyId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "productId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   }
 ]

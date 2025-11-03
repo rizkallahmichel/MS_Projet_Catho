@@ -11,11 +11,17 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.10" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.10">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MyApp.ServiceDefaults\MyApp.ServiceDefaults.csproj" />
     <ProjectReference Include="..\MyApp.Persistence\MyApp.Persistence.csproj" />
+    <ProjectReference Include="..\MyApp.Application\MyApp.Application.csproj" />
+    <ProjectReference Include="..\MyApp.Domain\MyApp.Domain.csproj" />
   </ItemGroup>
 
 </Project>

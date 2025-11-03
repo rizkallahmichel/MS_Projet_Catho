@@ -1,9 +1,311 @@
-﻿@page "/"
+@page "/"
+@attribute [Authorize]
+@inject ICmsApiClient CmsApiClient
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthStateProvider
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Pharmacies</PageTitle>
 
-<h1>Hello, world!</h1>
+<div class="d-flex flex-column flex-md-row align-items-md-center mb-4 gap-3">
+    <div>
+        <h1 class="mb-0">Pharmacies</h1>
+        <p class="text-muted mb-0">Manage the pharmacies in your tenant CMS.</p>
+    </div>
+    @if (isAdmin)
+    {
+        <div class="ms-md-auto">
+            <button class="btn btn-primary" @onclick="ShowCreateForm">
+                <span class="oi oi-plus me-1" aria-hidden="true"></span>
+                New Pharmacy
+            </button>
+        </div>
+    }
+</div>
 
-Welcome to your new app.
+@if (!string.IsNullOrEmpty(alertMessage))
+{
+    <div class="alert alert-@alertStyle alert-dismissible fade show" role="alert">
+        @alertMessage
+        <button type="button" class="btn-close" aria-label="Close" @onclick="() => alertMessage = null"></button>
+    </div>
+}
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+@if (isLoading)
+{
+    <div class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading pharmacy data...</span>
+        </div>
+    </div>
+}
+else if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger" role="alert">
+        <strong>Unable to load pharmacies.</strong>
+        <div class="small text-break">@errorMessage</div>
+        <button class="btn btn-outline-danger btn-sm mt-2" @onclick="ReloadAsync">Try again</button>
+    </div>
+}
+else if (pharmacies.Count == 0)
+{
+    <div class="alert alert-info">
+        There are no pharmacies yet. @if (isAdmin)
+        {
+            <span>Use the <strong>New Pharmacy</strong> button to add one.</span>
+        }
+    </div>
+}
+else
+{
+    <div class="row g-4">
+        @foreach (var pharmacy in pharmacies)
+        {
+            <div class="col-12 col-md-6 col-xl-4">
+                <div class="card shadow-sm h-100 border-0 border-top border-4 border-top-@GetStatusColor(pharmacy.IsActive)">
+                    <div class="card-body d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <h5 class="card-title mb-0">@pharmacy.Name</h5>
+                                <span class="badge bg-@GetStatusColor(pharmacy.IsActive) mt-2">
+                                    @(pharmacy.IsActive ? "Active" : "Inactive")
+                                </span>
+                            </div>
+                            <button class="btn btn-outline-secondary btn-sm" title="Manage pharmacy" @onclick="@(() => NavigateToPharmacy(pharmacy.Id))">
+                                <span class="oi oi-external-link" aria-hidden="true"></span>
+                            </button>
+                        </div>
+
+                        <p class="text-muted small mb-4">Categories: <strong>@pharmacy.CategoriesCount</strong> &middot; Products: <strong>@pharmacy.ProductsCount</strong></p>
+
+                        <div class="mt-auto">
+                            <button class="btn btn-outline-primary btn-sm me-2" @onclick="@(() => NavigateToPharmacy(pharmacy.Id))">
+                                <span class="oi oi-wrench me-1" aria-hidden="true"></span>
+                                Manage
+                            </button>
+                            @if (isAdmin)
+                            {
+                                <button class="btn btn-outline-danger btn-sm" @onclick="@(() => ToggleDeleteConfirmation(pharmacy.Id))">
+                                    <span class="oi oi-trash me-1" aria-hidden="true"></span>
+                                    Delete
+                                </button>
+                            }
+
+                            @if (isAdmin && confirmDeleteId == pharmacy.Id)
+                            {
+                                <div class="alert alert-warning mt-3 mb-0">
+                                    <div class="fw-semibold">Delete <span class="text-danger">@pharmacy.Name</span>?</div>
+                                    <p class="small mb-3">This removes the pharmacy and all of its data.</p>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-danger btn-sm" disabled="@isMutating" @onclick="@(() => ConfirmDeleteAsync(pharmacy.Id))">
+                                            @if (isMutating)
+                                            {
+                                                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                            }
+                                            Delete
+                                        </button>
+                                        <button class="btn btn-outline-secondary btn-sm" @onclick="CancelDelete">Cancel</button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@if (isAdmin && showCreateForm)
+{
+    <div class="card shadow-sm border-0 mt-5">
+        <div class="card-header bg-light">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="h5 mb-0">Create Pharmacy</h2>
+                <button class="btn btn-sm btn-outline-secondary" @onclick="HideCreateForm">Cancel</button>
+            </div>
+        </div>
+        <div class="card-body">
+            <EditForm Model="@createModel" OnValidSubmit="HandleCreateAsync">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="mb-3">
+                    <label class="form-label">Name</label>
+                    <InputText class="form-control" @bind-Value="createModel.Name" />
+                    <ValidationMessage For="@(() => createModel.Name)" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <InputTextArea class="form-control" @bind-Value="createModel.Description" rows="3" />
+                    <ValidationMessage For="@(() => createModel.Description)" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Address</label>
+                    <InputTextArea class="form-control" @bind-Value="createModel.Address" rows="2" />
+                    <ValidationMessage For="@(() => createModel.Address)" />
+                </div>
+
+                <button class="btn btn-primary" type="submit" disabled="@isMutating">
+                    @if (isMutating)
+                    {
+                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    }
+                    Create Pharmacy
+                </button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+@code {
+    private readonly List<PharmacySummary> pharmacies = [];
+    private bool isLoading = true;
+    private bool isAdmin;
+    private string? errorMessage;
+    private string? alertMessage;
+    private string alertStyle = "success";
+    private bool showCreateForm;
+    private bool isMutating;
+    private Guid? confirmDeleteId;
+
+    private readonly CreatePharmacyFormModel createModel = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ResolveUserRoleAsync();
+        await LoadPharmaciesAsync();
+    }
+
+    private async Task ResolveUserRoleAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        isAdmin = user.IsInRole("Admin");
+    }
+
+    private async Task LoadPharmaciesAsync()
+    {
+        isLoading = true;
+        errorMessage = null;
+        try
+        {
+            pharmacies.Clear();
+            var result = await CmsApiClient.GetPharmaciesAsync();
+            pharmacies.AddRange(result.OrderByDescending(p => p.IsActive).ThenBy(p => p.Name));
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void ShowCreateForm()
+    {
+        showCreateForm = true;
+        alertMessage = null;
+    }
+
+    private void HideCreateForm()
+    {
+        showCreateForm = false;
+        createModel.Reset();
+    }
+
+    private async Task HandleCreateAsync()
+    {
+        isMutating = true;
+        alertMessage = null;
+        try
+        {
+            var request = new CreatePharmacyRequest(createModel.Name, createModel.Description, createModel.Address);
+            await CmsApiClient.CreatePharmacyAsync(request);
+            SetAlert("Pharmacy created successfully.", "success");
+            HideCreateForm();
+            await LoadPharmaciesAsync();
+        }
+        catch (Exception ex)
+        {
+            SetAlert($"Failed to create pharmacy: {ex.Message}", "danger");
+        }
+        finally
+        {
+            isMutating = false;
+        }
+    }
+
+    private async Task ConfirmDeleteAsync(Guid pharmacyId)
+    {
+        isMutating = true;
+        alertMessage = null;
+        try
+        {
+            await CmsApiClient.DeletePharmacyAsync(pharmacyId);
+            SetAlert("Pharmacy deleted.", "info");
+            confirmDeleteId = null;
+            await LoadPharmaciesAsync();
+        }
+        catch (Exception ex)
+        {
+            SetAlert($"Failed to delete pharmacy: {ex.Message}", "danger");
+        }
+        finally
+        {
+            isMutating = false;
+        }
+    }
+
+    private void ToggleDeleteConfirmation(Guid pharmacyId)
+    {
+        alertMessage = null;
+        confirmDeleteId = confirmDeleteId == pharmacyId ? null : pharmacyId;
+    }
+
+    private void CancelDelete()
+    {
+        confirmDeleteId = null;
+    }
+
+    private void NavigateToPharmacy(Guid pharmacyId)
+    {
+        NavigationManager.NavigateTo($"/pharmacies/{pharmacyId}");
+    }
+
+    private async Task ReloadAsync()
+    {
+        await LoadPharmaciesAsync();
+    }
+
+    private void SetAlert(string message, string style)
+    {
+        alertMessage = message;
+        alertStyle = style;
+    }
+
+    private static string GetStatusColor(bool isActive) => isActive ? "success" : "secondary";
+
+    private sealed class CreatePharmacyFormModel
+    {
+        [Required]
+        [StringLength(200)]
+        public string Name { get; set; } = string.Empty;
+
+        [StringLength(500)]
+        public string? Description { get; set; }
+
+        [StringLength(400)]
+        public string? Address { get; set; }
+
+        public void Reset()
+        {
+            Name = string.Empty;
+            Description = null;
+            Address = null;
+        }
+    }
+}

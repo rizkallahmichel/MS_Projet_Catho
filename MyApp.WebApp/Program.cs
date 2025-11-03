@@ -1,23 +1,20 @@
-﻿using System;
-using Microsoft.AspNetCore.Authentication;
+using System;
 using System.Linq;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using MyApp.WebApp.Authentication;
 using MyApp.WebApp.Clients;
-using MyApp.WebApp.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<WeatherForecastService>();
 builder.AddServiceDefaults();
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -38,25 +35,37 @@ builder.Services.AddAuthentication(options =>
     options.UseTokenLifetime = true;
     options.MapInboundClaims = false;
     options.Scope.Add("api");
+    options.Scope.Add("profile");
+
+    options.ClaimActions.MapJsonKey("preferred_username", "preferred_username");
+    options.ClaimActions.MapJsonSubKey("role", "realm_access", "roles");
+    options.ClaimActions.MapJsonSubKey("role", "resource_access", "roles");
+
     options.TokenValidationParameters = new TokenValidationParameters
     {
         NameClaimType = "name",
-        RoleClaimType = "role",
+        RoleClaimType = "role"
     };
 });
+
 builder.Services.ConfigureCookieOidc(CookieAuthenticationDefaults.AuthenticationScheme, "oidc");
 builder.Services.AddAuthorization();
-builder.Services.AddAntiforgery();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<ApiTokenHandler>();
-builder.Services.AddHttpClient<ITodoClient, TodoClient>(client =>
+
+var apiBaseAddress = builder.Configuration["Api:BaseAddress"];
+if (string.IsNullOrWhiteSpace(apiBaseAddress))
 {
-    client.BaseAddress = new Uri("https+http://apiservice");
+    apiBaseAddress = "https+http://apiservice";
+}
+
+builder.Services.AddHttpClient<ICmsApiClient, CmsApiClient>(client =>
+{
+    client.BaseAddress = new Uri(apiBaseAddress);
 }).AddHttpMessageHandler<ApiTokenHandler>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
@@ -64,22 +73,15 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
-
 app.UseRouting();
-
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseAntiforgery();
 
 app.MapGet("/authentication/login", async (HttpContext context) =>
 {
     var returnUrl = context.Request.Query["returnUrl"].FirstOrDefault();
-    if (string.IsNullOrEmpty(returnUrl))
-    {
-        returnUrl = "/";
-    }
+    returnUrl = string.IsNullOrWhiteSpace(returnUrl) ? "/" : returnUrl;
 
     await context.ChallengeAsync("oidc", new AuthenticationProperties
     {
@@ -91,11 +93,20 @@ app.MapGet("/authentication/logout", async (HttpContext context) =>
 {
     var returnUrl = context.Request.Query["returnUrl"].FirstOrDefault() ?? "/";
 
+    var authResult = await context.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+    var properties = authResult?.Properties ?? new AuthenticationProperties();
+    properties.RedirectUri = returnUrl;
+
     await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-    await context.SignOutAsync("oidc", new AuthenticationProperties
+
+    if (authResult?.Principal?.Identity?.IsAuthenticated == true)
     {
-        RedirectUri = returnUrl
-    });
+        await context.SignOutAsync("oidc", properties);
+    }
+    else
+    {
+        context.Response.Redirect(returnUrl);
+    }
 }).AllowAnonymous();
 
 app.MapBlazorHub();

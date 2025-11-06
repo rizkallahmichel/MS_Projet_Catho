@@ -10,4 +10,5 @@ public sealed class KeycloakOptions
     public string? Username { get; set; }
     public string? Password { get; set; }
     public string PharmacyRoleName { get; set; } = "pharmacy";
+    public string ClientRoleName { get; set; } = "client";
 }

@@ -29,7 +29,38 @@ public sealed class KeycloakIdentityProvisioningService : IIdentityProvisioningS
         _logger = logger;
     }
 
-    public async Task<string> ProvisionPharmacyUserAsync(CreatePharmacyUserModel user, CancellationToken cancellationToken)
+    public Task<string> ProvisionPharmacyUserAsync(CreatePharmacyUserModel user, CancellationToken cancellationToken)
+    {
+        var attributes = new Dictionary<string, object?>
+        {
+            ["pharmacyId"] = new[] { user.PharmacyId.ToString() }
+        };
+
+        var descriptor = new KeycloakUserDescriptor(
+            user.Username,
+            user.Email,
+            user.Password,
+            user.FirstName,
+            user.LastName,
+            attributes);
+
+        return ProvisionUserAsync(descriptor, _options.PharmacyRoleName, cancellationToken);
+    }
+
+    public Task<string> ProvisionClientUserAsync(CreateClientUserModel user, CancellationToken cancellationToken)
+    {
+        var descriptor = new KeycloakUserDescriptor(
+            user.Username,
+            user.Email,
+            user.Password,
+            user.FirstName,
+            user.LastName,
+            null);
+
+        return ProvisionUserAsync(descriptor, _options.ClientRoleName, cancellationToken);
+    }
+
+    private async Task<string> ProvisionUserAsync(KeycloakUserDescriptor descriptor, string roleName, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(_options.BaseUrl))
         {
@@ -37,8 +68,8 @@ public sealed class KeycloakIdentityProvisioningService : IIdentityProvisioningS
         }
 
         var adminToken = await GetAdminAccessTokenAsync(cancellationToken);
-        var userId = await CreateUserAsync(adminToken, user, cancellationToken);
-        await AssignRealmRoleAsync(adminToken, userId, _options.PharmacyRoleName, cancellationToken);
+        var userId = await CreateUserAsync(adminToken, descriptor, cancellationToken);
+        await AssignRealmRoleAsync(adminToken, userId, roleName, cancellationToken);
 
         return userId;
     }
@@ -99,7 +130,7 @@ public sealed class KeycloakIdentityProvisioningService : IIdentityProvisioningS
         };
     }
 
-    private async Task<string> CreateUserAsync(string accessToken, CreatePharmacyUserModel user, CancellationToken cancellationToken)
+    private async Task<string> CreateUserAsync(string accessToken, KeycloakUserDescriptor user, CancellationToken cancellationToken)
     {
         using var request = new HttpRequestMessage(HttpMethod.Post, $"admin/realms/{_options.Realm}/users");
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
@@ -112,10 +143,7 @@ public sealed class KeycloakIdentityProvisioningService : IIdentityProvisioningS
             emailVerified = true,
             firstName = user.FirstName,
             lastName = user.LastName,
-            attributes = new Dictionary<string, object?>
-            {
-                ["pharmacyId"] = new[] { user.PharmacyId.ToString() }
-            },
+            attributes = user.Attributes,
             credentials = new[]
             {
                 new
@@ -196,7 +224,7 @@ public sealed class KeycloakIdentityProvisioningService : IIdentityProvisioningS
     {
         if (string.IsNullOrWhiteSpace(roleName))
         {
-            _logger.LogWarning("Keycloak pharmacy role name is not configured. Skipping role assignment for user {UserId}", userId);
+            _logger.LogWarning("Keycloak role name is not configured. Skipping role assignment for user {UserId}", userId);
             return;
         }
 
@@ -228,4 +256,12 @@ public sealed class KeycloakIdentityProvisioningService : IIdentityProvisioningS
 
         return await response.Content.ReadFromJsonAsync<JsonElement>(cancellationToken: cancellationToken);
     }
+
+    private sealed record KeycloakUserDescriptor(
+        string Username,
+        string Email,
+        string Password,
+        string? FirstName,
+        string? LastName,
+        Dictionary<string, object?>? Attributes);
 }

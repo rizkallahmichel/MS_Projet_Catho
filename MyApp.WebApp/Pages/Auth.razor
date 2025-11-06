@@ -1,0 +1,202 @@
+@page "/auth"
+@attribute [AllowAnonymous]
+@inject NavigationManager Navigation
+@inject IIdentityApiClient IdentityApiClient
+@using System.ComponentModel.DataAnnotations
+
+<PageTitle>Access Your Account</PageTitle>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-7">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-light border-0">
+                    <ul class="nav nav-tabs card-header-tabs">
+                        <li class="nav-item">
+                            <button class="nav-link @(showRegisterTab ? "" : "active")" @onclick="() => SwitchTab(false)">
+                                Sign In
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link @(showRegisterTab ? "active" : "")" @onclick="() => SwitchTab(true)">
+                                Register
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    @if (!string.IsNullOrEmpty(alertMessage))
+                    {
+                        <div class="alert alert-@alertStyle alert-dismissible fade show" role="alert">
+                            @alertMessage
+                            <button type="button" class="btn-close" aria-label="Close" @onclick="() => alertMessage = null"></button>
+                        </div>
+                    }
+
+                    @if (!showRegisterTab)
+                    {
+                        <div class="text-center py-4">
+                            <h2 class="h4 mb-3">Welcome back</h2>
+                            <p class="text-muted mb-4">Sign in with your existing account to manage your orders and pharmacies.</p>
+                            <button class="btn btn-primary btn-lg" @onclick="TriggerLogin">
+                                Continue to Sign In
+                            </button>
+                        </div>
+                    }
+                    else
+                    {
+                        <EditForm Model="@registerForm" OnValidSubmit="HandleRegisterAsync">
+                            <DataAnnotationsValidator />
+                            <ValidationSummary />
+
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label class="form-label">Username</label>
+                                    <InputText class="form-control" @bind-Value="registerForm.Username" />
+                                    <ValidationMessage For="@(() => registerForm.Username)" />
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Email</label>
+                                    <InputText class="form-control" @bind-Value="registerForm.Email" type="email" />
+                                    <ValidationMessage For="@(() => registerForm.Email)" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Password</label>
+                                    <InputText class="form-control" @bind-Value="registerForm.Password" type="password" />
+                                    <ValidationMessage For="@(() => registerForm.Password)" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Confirm password</label>
+                                    <InputText class="form-control" @bind-Value="registerForm.ConfirmPassword" type="password" />
+                                    <ValidationMessage For="@(() => registerForm.ConfirmPassword)" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">First name (optional)</label>
+                                    <InputText class="form-control" @bind-Value="registerForm.FirstName" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Last name (optional)</label>
+                                    <InputText class="form-control" @bind-Value="registerForm.LastName" />
+                                </div>
+                            </div>
+
+                            <button class="btn btn-primary mt-4" type="submit" disabled="@isSubmitting">
+                                @if (isSubmitting)
+                                {
+                                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                }
+                                Create account
+                            </button>
+                        </EditForm>
+                    }
+                </div>
+            </div>
+            <div class="text-center text-muted small mt-3">
+                Need help? Contact your administrator for assistance.
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [SupplyParameterFromQuery(Name = "returnUrl")]
+    public string? ReturnUrl { get; set; }
+
+    private readonly RegisterFormModel registerForm = new();
+    private bool showRegisterTab;
+    private bool isSubmitting;
+    private string? alertMessage;
+    private string alertStyle = "info";
+
+    private string TargetReturnUrl => string.IsNullOrWhiteSpace(ReturnUrl) ? "/" : ReturnUrl;
+
+    private void SwitchTab(bool registerTab)
+    {
+        showRegisterTab = registerTab;
+        alertMessage = null;
+    }
+
+    private void TriggerLogin()
+    {
+        var encoded = Uri.EscapeDataString(TargetReturnUrl);
+        Navigation.NavigateTo($"authentication/login?returnUrl={encoded}", forceLoad: true);
+    }
+
+    private async Task HandleRegisterAsync()
+    {
+        if (!string.Equals(registerForm.Password, registerForm.ConfirmPassword, StringComparison.Ordinal))
+        {
+            SetAlert("Passwords do not match.", "danger");
+            return;
+        }
+
+        isSubmitting = true;
+        SetAlert(null, "info");
+
+        try
+        {
+            var request = new RegisterClientRequest(
+                registerForm.Username,
+                registerForm.Email,
+                registerForm.Password,
+                registerForm.FirstName,
+                registerForm.LastName);
+
+            await IdentityApiClient.RegisterClientAsync(request);
+
+            registerForm.Reset();
+            showRegisterTab = false;
+            SetAlert("Account created successfully. Use your new credentials to sign in.", "success");
+        }
+        catch (Exception ex)
+        {
+            SetAlert($"Registration failed: {ex.Message}", "danger");
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+    }
+
+    private void SetAlert(string? message, string style)
+    {
+        alertMessage = message;
+        alertStyle = style;
+    }
+
+    private sealed class RegisterFormModel
+    {
+        [Required]
+        [StringLength(64, MinimumLength = 3)]
+        public string Username { get; set; } = string.Empty;
+
+        [Required]
+        [EmailAddress]
+        [StringLength(256)]
+        public string Email { get; set; } = string.Empty;
+
+        [Required]
+        [StringLength(128, MinimumLength = 8)]
+        public string Password { get; set; } = string.Empty;
+
+        [Required]
+        [StringLength(128, MinimumLength = 8)]
+        public string ConfirmPassword { get; set; } = string.Empty;
+
+        [StringLength(100)]
+        public string? FirstName { get; set; }
+
+        [StringLength(100)]
+        public string? LastName { get; set; }
+
+        public void Reset()
+        {
+            Username = string.Empty;
+            Email = string.Empty;
+            Password = string.Empty;
+            ConfirmPassword = string.Empty;
+            FirstName = null;
+            LastName = null;
+        }
+    }
+}

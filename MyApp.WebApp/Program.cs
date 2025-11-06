@@ -143,6 +143,11 @@ builder.Services.AddHttpClient<ICmsApiClient, CmsApiClient>(client =>
     client.BaseAddress = new Uri(apiBaseAddress);
 }).AddHttpMessageHandler<ApiTokenHandler>();
 
+builder.Services.AddHttpClient<IIdentityApiClient, IdentityApiClient>(client =>
+{
+    client.BaseAddress = new Uri(apiBaseAddress);
+});
+
 // --------------------
 // Build App
 // --------------------

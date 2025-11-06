@@ -1,5 +1,21 @@
 [
   {
+    "ContainingType": "MyApp.ApiService.Controllers.IdentityController",
+    "Method": "RegisterClient",
+    "RelativePath": "api/identity/register",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "MyApp.ApiService.Contracts.Identity.RegisterClientRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "MyApp.ApiService.Controllers.PharmaciesController",
     "Method": "GetPharmacies",
     "RelativePath": "api/pharmacies",
@@ -209,6 +225,37 @@
     "ReturnTypes": [
       {
         "Type": "System.Collections.Generic.IReadOnlyList\u00601[[MyApp.Application.Common.Models.OrderSummaryDto, MyApp.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyApp.ApiService.Controllers.PharmacyOrdersController",
+    "Method": "CreateOrder",
+    "RelativePath": "api/pharmacies/{pharmacyId}/orders",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pharmacyId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "MyApp.ApiService.Contracts.Orders.CreateOrderRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MyApp.ApiService.Contracts.Orders.CreateOrderResponse",
         "MediaTypes": [
           "text/plain",
           "application/json",

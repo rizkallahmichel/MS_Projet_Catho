@@ -130,3 +130,4 @@ D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.WebApp\obj\Debug\net9.0\refint\MyApp.
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.WebApp\obj\Debug\net9.0\MyApp.WebApp.pdb
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.WebApp\obj\Debug\net9.0\MyApp.WebApp.genruntimeconfig.cache
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.WebApp\obj\Debug\net9.0\ref\MyApp.WebApp.dll
+D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.WebApp\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt

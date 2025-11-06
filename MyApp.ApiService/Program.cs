@@ -105,6 +105,13 @@ builder.Services.AddAuthorization(options =>
             return roles.Contains("admin", StringComparer.OrdinalIgnoreCase) ||
                    roles.Contains("pharmacy", StringComparer.OrdinalIgnoreCase);
         }));
+
+    options.AddPolicy("RequireClientRole", policy =>
+        policy.RequireAssertion(context =>
+        {
+            var roles = ResolveRoles(context.User.Claims);
+            return roles.Contains("client", StringComparer.OrdinalIgnoreCase);
+        }));
 });
 
 builder.Services.AddControllers();

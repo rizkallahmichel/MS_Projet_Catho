@@ -94,6 +94,22 @@ public class Product : Entity
         }
     }
 
+    public void DecreaseStock(int quantity)
+    {
+        if (quantity <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(quantity));
+        }
+
+        if (quantity > StockQuantity)
+        {
+            throw new InvalidOperationException("Insufficient stock available.");
+        }
+
+        StockQuantity -= quantity;
+        Touch();
+    }
+
     private void Touch()
     {
         UpdatedAt = DateTimeOffset.UtcNow;

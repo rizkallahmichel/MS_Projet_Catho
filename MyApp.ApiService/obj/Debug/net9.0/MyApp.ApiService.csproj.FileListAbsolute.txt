@@ -218,4 +218,3 @@ D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ApiService\bin\Debug\net9.0\MyApp.Api
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ApiService\obj\Debug\net9.0\MyApp.Ap.4CD6A0D4.Up2Date
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ApiService\obj\Debug\net9.0\MyApp.ApiService.genruntimeconfig.cache
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ApiService\obj\Debug\net9.0\ref\MyApp.ApiService.dll
-D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ApiService\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt

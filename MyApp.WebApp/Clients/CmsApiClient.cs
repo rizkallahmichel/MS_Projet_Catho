@@ -175,6 +175,25 @@ public class CmsApiClient : ICmsApiClient
         return result ?? Array.Empty<OrderSummaryModel>();
     }
 
+    public async Task<OrderCreatedResult> CreateOrderAsync(Guid pharmacyId, CreateOrderRequest request, CancellationToken cancellationToken = default)
+    {
+        var response = await _httpClient.PostAsJsonAsync(
+            $"api/pharmacies/{pharmacyId}/orders",
+            request,
+            SerializerOptions,
+            cancellationToken);
+
+        response.EnsureSuccessStatusCode();
+
+        var payload = await response.Content.ReadFromJsonAsync<OrderCreatedResponse>(SerializerOptions, cancellationToken);
+        if (payload is null)
+        {
+            return new OrderCreatedResult(Guid.Empty, string.Empty);
+        }
+
+        return new OrderCreatedResult(payload.Id, payload.OrderNumber);
+    }
+
     public async Task<IReadOnlyList<PaymentModel>> GetPaymentsAsync(Guid pharmacyId, Guid? orderId = null, CancellationToken cancellationToken = default)
     {
         var uri = orderId.HasValue
@@ -186,4 +205,5 @@ public class CmsApiClient : ICmsApiClient
     }
 
     private sealed record IdResponse(Guid Id);
+    private sealed record OrderCreatedResponse(Guid Id, string OrderNumber);
 }

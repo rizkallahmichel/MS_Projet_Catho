@@ -7,12 +7,16 @@
 @using System.Security.Claims
 @using System.Text.Json
 
-<PageTitle>Pharmacies</PageTitle>
+<PageTitle>@(isClient ? "Browse Pharmacies" : "Pharmacies")</PageTitle>
 
 <div class="d-flex flex-column flex-md-row align-items-md-center mb-4 gap-3">
     <div>
-        <h1 class="mb-0">Pharmacies</h1>
-        <p class="text-muted mb-0">Manage the pharmacies in your tenant CMS.</p>
+        <h1 class="mb-0">@(isClient ? "Browse Pharmacies" : "Pharmacies")</h1>
+        <p class="text-muted mb-0">
+            @(isClient
+                ? "Choose a pharmacy to see its products and place an order."
+                : "Manage the pharmacies in your tenant CMS.")
+        </p>
     </div>
     @if (isAdmin)
     {
@@ -53,9 +57,17 @@ else if (!string.IsNullOrEmpty(errorMessage))
 else if (pharmacies.Count == 0)
 {
     <div class="alert alert-info">
-        There are no pharmacies yet. @if (isAdmin)
+        @if (isClient)
         {
-            <span>Use the <strong>New Pharmacy</strong> button to add one.</span>
+            <span>There are no pharmacies available to order from right now.</span>
+        }
+        else
+        {
+            <span>There are no pharmacies yet.</span>
+        }
+        @if (isAdmin)
+        {
+            <span> Use the <strong>New Pharmacy</strong> button to add one.</span>
         }
     </div>
 }
@@ -82,9 +94,9 @@ else
                         <p class="text-muted small mb-4">Categories: <strong>@pharmacy.CategoriesCount</strong> &middot; Products: <strong>@pharmacy.ProductsCount</strong></p>
 
                         <div class="mt-auto">
-                            <button class="btn btn-outline-primary btn-sm me-2" @onclick="@(() => NavigateToPharmacy(pharmacy.Id))">
-                                <span class="oi oi-wrench me-1" aria-hidden="true"></span>
-                                Manage
+                            <button class="btn @(isClient ? "btn-primary" : "btn-outline-primary") btn-sm me-2" @onclick="@(() => NavigateToPharmacy(pharmacy.Id))">
+                                <span class="oi @(isClient ? "oi-cart" : "oi-wrench") me-1" aria-hidden="true"></span>
+                                @(isClient ? "Shop" : "Manage")
                             </button>
                             @if (isAdmin)
                             {
@@ -202,6 +214,7 @@ else
     private readonly List<PharmacySummary> pharmacies = [];
     private bool isLoading = true;
     private bool isAdmin;
+    private bool isClient;
     private string? errorMessage;
     private string? alertMessage;
     private string alertStyle = "success";
@@ -220,7 +233,10 @@ else
     {
         var authState = await AuthStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
-        isAdmin = HasRole(user, "admin");
+        var hasAdminRole = HasRole(user, "admin");
+        var hasPharmacyRole = HasRole(user, "pharmacy");
+        isAdmin = hasAdminRole;
+        isClient = !hasAdminRole && !hasPharmacyRole && HasRole(user, "client");
     }
 
     private async Task LoadPharmaciesAsync()

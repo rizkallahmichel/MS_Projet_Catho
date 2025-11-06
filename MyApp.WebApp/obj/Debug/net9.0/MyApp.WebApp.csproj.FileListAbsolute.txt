@@ -124,7 +124,6 @@ D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.WebApp\obj\Debug\net9.0\staticwebasse
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.WebApp\obj\Debug\net9.0\staticwebassets.build.json.cache
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.WebApp\obj\Debug\net9.0\staticwebassets.development.json
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.WebApp\obj\Debug\net9.0\staticwebassets.build.endpoints.json
-D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.WebApp\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.WebApp\obj\Debug\net9.0\MyApp.We.F4290FEB.Up2Date
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.WebApp\obj\Debug\net9.0\MyApp.WebApp.dll
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.WebApp\obj\Debug\net9.0\refint\MyApp.WebApp.dll

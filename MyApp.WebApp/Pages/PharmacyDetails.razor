@@ -5,6 +5,7 @@
 @inject AuthenticationStateProvider AuthStateProvider
 @inject NavigationManager NavigationManager
 @using System.Collections.Generic
+@using System.Linq
 @using System.Security.Claims
 @using System.Text.Json
 
@@ -135,7 +136,152 @@ else if (pharmacy is not null)
         </section>
     }
 
-    <section class="mb-5" id="categories">
+    @if (isClient)
+    {
+        <section class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-light">
+                <div class="d-flex flex-column flex-md-row align-items-md-center gap-3">
+                    <h2 class="h5 mb-0">Products</h2>
+                    @if (categories.Any(category => category.IsActive))
+                    {
+                        <div class="ms-md-auto">
+                            <select class="form-select form-select-sm w-auto"
+                                    value="@selectedCategoryId?.ToString()"
+                                    @onchange="OnCategoryFilterChanged">
+                                <option value="">All categories</option>
+                                @foreach (var category in categories.Where(category => category.IsActive).OrderBy(category => category.Name))
+                                {
+                                    <option value="@category.Id">@category.Name</option>
+                                }
+                            </select>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="card-body">
+                @{
+                    var storefrontProducts = GetStorefrontProducts().ToList();
+                }
+                @if (storefrontProducts.Count > 0)
+                {
+                    <div class="row g-3">
+                        @foreach (var product in storefrontProducts)
+                        {
+                            <div class="col-12 col-md-6 col-xl-4">
+                                <div class="border rounded p-3 h-100 d-flex flex-column">
+                                    <div class="mb-2">
+                                        <h3 class="h6 mb-1">@product.Name</h3>
+                                        <div class="text-muted small">@GetCategoryName(product.CategoryId)</div>
+                                    </div>
+                                    <p class="text-muted small flex-grow-1 mb-3">
+                                        @(!string.IsNullOrWhiteSpace(product.Description) ? product.Description : "No description provided.")
+                                    </p>
+                                    <div class="d-flex justify-content-between align-items-end mt-auto">
+                                        <div>
+                                            <div class="fw-semibold">@product.Price.ToString("C")</div>
+                                            <div class="text-muted small">
+                                                @(product.StockQuantity > 0 ? $"{product.StockQuantity} in stock" : "Out of stock")
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-sm btn-primary"
+                                                disabled="@(product.StockQuantity <= 0 || !product.IsActive || !CanIncreaseQuantity(product.Id))"
+                                                @onclick="@(() => AddProductToCart(product))">
+                                            <span class="oi oi-cart me-1" aria-hidden="true"></span>
+                                            Add
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="text-muted fst-italic">No products available in this category.</div>
+                }
+            </div>
+        </section>
+        <section class="card shadow-sm border-0 mb-5">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                <h2 class="h5 mb-0">Cart</h2>
+                @if (cartLines.Count > 0)
+                {
+                    <button class="btn btn-sm btn-outline-secondary" @onclick="ClearCart">Clear cart</button>
+                }
+            </div>
+            <div class="card-body">
+                @if (!string.IsNullOrWhiteSpace(cartErrorMessage))
+                {
+                    <div class="alert alert-danger">@cartErrorMessage</div>
+                }
+                @if (cartLines.Count == 0)
+                {
+                    <div class="text-muted fst-italic">Add products to your cart to place an order.</div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th class="text-center" style="width: 180px;">Quantity</th>
+                                    <th class="text-end" style="width: 150px;">Line total</th>
+                                    <th class="text-end" style="width: 1%;"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var line in cartLines)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="fw-semibold">@line.Name</div>
+                                            <div class="text-muted small">@line.Price.ToString("C") each</div>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex justify-content-center align-items-center gap-2">
+                                                <button class="btn btn-sm btn-outline-secondary" @onclick="@(() => DecreaseCartQuantity(line.ProductId))">
+                                                    <span class="oi oi-minus" aria-hidden="true"></span>
+                                                </button>
+                                                <span class="fw-semibold">@line.Quantity</span>
+                                                <button class="btn btn-sm btn-outline-secondary"
+                                                        disabled="@(CanIncreaseQuantity(line.ProductId) ? false : true)"
+                                                        @onclick="@(() => IncreaseCartQuantity(line.ProductId))">
+                                                    <span class="oi oi-plus" aria-hidden="true"></span>
+                                                </button>
+                                            </div>
+                                        </td>
+                                        <td class="text-end fw-semibold">@line.LineTotal.ToString("C")</td>
+                                        <td class="text-end">
+                                            <button class="btn btn-sm btn-outline-danger" @onclick="@(() => RemoveFromCart(line.ProductId))">
+                                                <span class="oi oi-trash" aria-hidden="true"></span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-lg-between mt-4">
+                        <div class="fs-5 mb-3 mb-lg-0">Total: <strong>@CartTotal.ToString("C")</strong></div>
+                        <button class="btn btn-primary"
+                                disabled="@(!CanPlaceOrder || isPlacingOrder)"
+                                @onclick="PlaceOrderAsync">
+                            @if (isPlacingOrder)
+                            {
+                                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            }
+                            Place order
+                        </button>
+                    </div>
+                }
+            </div>
+        </section>
+    }
+
+    @if (canManageCatalog)
+    {
+        <section class="mb-5" id="categories">
         <div class="d-flex flex-column flex-md-row align-items-md-center mb-3 gap-3">
             <h2 class="h4 mb-0">Categories</h2>
             <span class="badge bg-secondary">@categories.Count @(categories.Count == 1 ? "category" : "categories")</span>
@@ -407,7 +553,10 @@ else if (pharmacy is not null)
             </div>
         }
     </section>
+    }
 
+    @if (!isClient)
+    {
     <section class="mb-5" id="orders">
         <div class="d-flex flex-column flex-md-row align-items-md-center gap-3 mb-3">
             <h2 class="h4 mb-0">Orders</h2>
@@ -511,6 +660,7 @@ else if (pharmacy is not null)
             </div>
         }
     </section>
+    }
 }
 @code {
     [Parameter]
@@ -526,6 +676,11 @@ else if (pharmacy is not null)
     private bool isLoadingPayments;
     private bool canManagePharmacy;
     private bool canManageCatalog;
+    private bool isClient;
+    private Guid? selectedCategoryId;
+    private readonly List<CartLineModel> cartLines = [];
+    private bool isPlacingOrder;
+    private string? cartErrorMessage;
     private string? errorMessage;
     private string? alertMessage;
     private string alertStyle = "success";
@@ -557,8 +712,11 @@ else if (pharmacy is not null)
     {
         var authState = await AuthStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
-        canManagePharmacy = HasRole(user, "admin");
-        canManageCatalog = canManagePharmacy || HasRole(user, "pharmacy");
+        var hasAdminRole = HasRole(user, "admin");
+        var hasPharmacyRole = HasRole(user, "pharmacy");
+        canManagePharmacy = hasAdminRole;
+        canManageCatalog = hasAdminRole || hasPharmacyRole;
+        isClient = !hasAdminRole && !hasPharmacyRole && HasRole(user, "client");
     }
 
     private async Task LoadAllAsync()
@@ -576,18 +734,24 @@ else if (pharmacy is not null)
                 return;
             }
 
-            pharmacy = detail;
-            pharmacyForm.LoadFrom(detail);
+              pharmacy = detail;
+              pharmacyForm.LoadFrom(detail);
 
-            await LoadCategoriesAsync();
-            await LoadProductsAsync();
-            await LoadOrdersAsync();
-            await LoadPaymentsAsync();
-        }
-        catch (Exception ex)
-        {
-            errorMessage = ex.Message;
-        }
+              await LoadCategoriesAsync();
+              await LoadProductsAsync();
+              if (canManageCatalog || canManagePharmacy)
+              {
+                  await LoadOrdersAsync();
+              }
+              if (canManagePharmacy)
+              {
+                  await LoadPaymentsAsync();
+              }
+          }
+          catch (Exception ex)
+          {
+              errorMessage = ex.Message;
+          }
         finally
         {
             isLoading = false;
@@ -606,6 +770,214 @@ else if (pharmacy is not null)
         products.Clear();
         var result = await CmsApiClient.GetProductsAsync(PharmacyId);
         products.AddRange(result.OrderBy(p => p.Name));
+        ReconcileCartWithStock();
+    }
+
+    private IEnumerable<ProductModel> GetStorefrontProducts()
+    {
+        var query = products.Where(product => product.IsActive);
+
+        if (selectedCategoryId.HasValue)
+        {
+            query = query.Where(product => product.CategoryId == selectedCategoryId.Value);
+        }
+
+        return query.OrderBy(product => product.Name);
+    }
+
+    private void OnCategoryFilterChanged(ChangeEventArgs args)
+    {
+        cartErrorMessage = null;
+        if (Guid.TryParse(args.Value?.ToString(), out var categoryId))
+        {
+            selectedCategoryId = categoryId;
+        }
+        else
+        {
+            selectedCategoryId = null;
+        }
+    }
+
+    private void AddProductToCart(ProductModel product)
+    {
+        cartErrorMessage = null;
+
+        if (!product.IsActive || product.StockQuantity <= 0)
+        {
+            SetAlert($"{product.Name} is not available at the moment.", "warning");
+            return;
+        }
+
+        var existingLine = cartLines.FirstOrDefault(line => line.ProductId == product.Id);
+        var availableStock = GetProductAvailableStock(product.Id);
+
+        if (availableStock <= 0)
+        {
+            SetAlert($"{product.Name} is out of stock.", "warning");
+            return;
+        }
+
+        if (existingLine is null)
+        {
+            cartLines.Add(new CartLineModel(product.Id, product.Name, product.Price));
+            return;
+        }
+
+        if (existingLine.Quantity >= availableStock)
+        {
+            SetAlert($"Only {availableStock} units of {product.Name} are available.", "warning");
+            return;
+        }
+
+        existingLine.Increment();
+    }
+
+    private void IncreaseCartQuantity(Guid productId)
+    {
+        cartErrorMessage = null;
+        var line = cartLines.FirstOrDefault(item => item.ProductId == productId);
+        if (line is null)
+        {
+            return;
+        }
+
+        var availableStock = GetProductAvailableStock(productId);
+        if (availableStock <= 0)
+        {
+            SetAlert($"{line.Name} is currently out of stock.", "warning");
+            return;
+        }
+
+        if (line.Quantity >= availableStock)
+        {
+            SetAlert($"Only {availableStock} units of {line.Name} are available.", "warning");
+            return;
+        }
+
+        line.Increment();
+    }
+
+    private void DecreaseCartQuantity(Guid productId)
+    {
+        cartErrorMessage = null;
+        var line = cartLines.FirstOrDefault(item => item.ProductId == productId);
+        if (line is null)
+        {
+            return;
+        }
+
+        if (line.Quantity <= 1)
+        {
+            cartLines.Remove(line);
+            return;
+        }
+
+        line.Decrement();
+    }
+
+    private void RemoveFromCart(Guid productId)
+    {
+        cartErrorMessage = null;
+        cartLines.RemoveAll(line => line.ProductId == productId);
+    }
+
+    private void ClearCart()
+    {
+        cartLines.Clear();
+        cartErrorMessage = null;
+    }
+
+    private bool CanIncreaseQuantity(Guid productId)
+    {
+        var line = cartLines.FirstOrDefault(item => item.ProductId == productId);
+        var availableStock = GetProductAvailableStock(productId);
+        if (availableStock <= 0)
+        {
+            return false;
+        }
+
+        if (line is null)
+        {
+            return true;
+        }
+
+        return line.Quantity < availableStock;
+    }
+
+    private int GetProductAvailableStock(Guid productId)
+    {
+        return products.FirstOrDefault(product => product.Id == productId)?.StockQuantity ?? 0;
+    }
+
+    private decimal CartTotal => cartLines.Sum(line => line.LineTotal);
+
+    private bool CanPlaceOrder =>
+        cartLines.Count > 0 &&
+        cartLines.All(line =>
+        {
+            var available = GetProductAvailableStock(line.ProductId);
+            return available > 0 && line.Quantity <= available;
+        });
+
+    private void ReconcileCartWithStock()
+    {
+        if (cartLines.Count == 0)
+        {
+            return;
+        }
+
+        foreach (var line in cartLines.ToList())
+        {
+            var available = GetProductAvailableStock(line.ProductId);
+            if (available <= 0)
+            {
+                cartLines.Remove(line);
+            }
+            else if (line.Quantity > available)
+            {
+                line.SetQuantity(available);
+            }
+        }
+    }
+
+    private async Task PlaceOrderAsync()
+    {
+        if (!CanPlaceOrder)
+        {
+            cartErrorMessage = "Please review your cart before placing the order.";
+            return;
+        }
+
+        isPlacingOrder = true;
+        cartErrorMessage = null;
+
+        try
+        {
+            var request = new CreateOrderRequest(
+                cartLines
+                    .Select(line => new CreateOrderLineRequest(line.ProductId, line.Quantity))
+                    .ToArray());
+
+            var result = await CmsApiClient.CreateOrderAsync(PharmacyId, request);
+
+            SetAlert($"Order {result.OrderNumber} placed successfully.", "success");
+            cartLines.Clear();
+
+            await LoadProductsAsync();
+            if (!isClient)
+            {
+                await LoadOrdersAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            cartErrorMessage = ex.Message;
+            SetAlert($"Failed to place order: {ex.Message}", "danger");
+        }
+        finally
+        {
+            isPlacingOrder = false;
+        }
     }
 
     private async Task LoadOrdersAsync()
@@ -986,6 +1358,47 @@ else if (pharmacy is not null)
     }
 
     private static string GetStatusColor(bool isActive) => isActive ? "success" : "secondary";
+
+    private sealed class CartLineModel
+    {
+        public CartLineModel(Guid productId, string name, decimal price)
+        {
+            ProductId = productId;
+            Name = name;
+            Price = price;
+            Quantity = 1;
+        }
+
+        public Guid ProductId { get; }
+        public string Name { get; }
+        public decimal Price { get; }
+        public int Quantity { get; private set; }
+
+        public decimal LineTotal => Price * Quantity;
+
+        public void Increment()
+        {
+            Quantity++;
+        }
+
+        public void Decrement()
+        {
+            if (Quantity > 0)
+            {
+                Quantity--;
+            }
+        }
+
+        public void SetQuantity(int quantity)
+        {
+            if (quantity <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(quantity));
+            }
+
+            Quantity = quantity;
+        }
+    }
 
     private sealed class PharmacyEditModel
     {

@@ -12,6 +12,11 @@ public class OrderRepository : IOrderRepository
         _dbContext = dbContext;
     }
 
+    public async Task AddAsync(Order order, CancellationToken cancellationToken = default)
+    {
+        await _dbContext.Orders.AddAsync(order, cancellationToken);
+    }
+
     public async Task<IReadOnlyList<Order>> GetByPharmacyAsync(Guid pharmacyId, CancellationToken cancellationToken = default)
     {
         return await _dbContext.Orders

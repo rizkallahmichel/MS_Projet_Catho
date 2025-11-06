@@ -23,5 +23,6 @@ public interface ICmsApiClient
     Task DeleteProductAsync(Guid pharmacyId, Guid productId, CancellationToken cancellationToken = default);
 
     Task<IReadOnlyList<OrderSummaryModel>> GetOrdersAsync(Guid pharmacyId, CancellationToken cancellationToken = default);
+    Task<OrderCreatedResult> CreateOrderAsync(Guid pharmacyId, CreateOrderRequest request, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<PaymentModel>> GetPaymentsAsync(Guid pharmacyId, Guid? orderId = null, CancellationToken cancellationToken = default);
 }

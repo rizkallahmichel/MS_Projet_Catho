@@ -4,6 +4,9 @@
 @inject ICmsApiClient CmsApiClient
 @inject AuthenticationStateProvider AuthStateProvider
 @inject NavigationManager NavigationManager
+@using System.Collections.Generic
+@using System.Security.Claims
+@using System.Text.Json
 
 <PageTitle>@(pharmacy?.Name ?? "Pharmacy")</PageTitle>
 
@@ -554,8 +557,8 @@ else if (pharmacy is not null)
     {
         var authState = await AuthStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
-        canManagePharmacy = user.IsInRole("Admin");
-        canManageCatalog = user.IsInRole("Admin") || user.IsInRole("Pharmacy");
+        canManagePharmacy = HasRole(user, "admin");
+        canManageCatalog = canManagePharmacy || HasRole(user, "pharmacy");
     }
 
     private async Task LoadAllAsync()
@@ -869,9 +872,106 @@ else if (pharmacy is not null)
         NavigationManager.NavigateTo("/");
     }
 
+    private static bool HasRole(ClaimsPrincipal? user, string role)
+    {
+        if (user is null)
+        {
+            return false;
+        }
+
+        if (user.Claims.Any(claim =>
+                string.Equals(claim.Value, role, StringComparison.OrdinalIgnoreCase) &&
+                (string.Equals(claim.Type, ClaimTypes.Role, StringComparison.OrdinalIgnoreCase) ||
+                 string.Equals(claim.Type, "role", StringComparison.OrdinalIgnoreCase))))
+        {
+            return true;
+        }
+
+        var realmAccess = user.Claims.FirstOrDefault(c => c.Type == "realm_access")?.Value;
+        if (TryReadRolesFromJson(realmAccess, out var rolesFromRealm) &&
+            rolesFromRealm.Contains(role, StringComparer.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        var resourceAccess = user.Claims.FirstOrDefault(c => c.Type == "resource_access")?.Value;
+        if (TryReadRolesFromResourceAccess(resourceAccess, out var rolesFromResources) &&
+            rolesFromResources.Contains(role, StringComparer.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private static bool TryReadRolesFromJson(string? json, out HashSet<string> roles)
+    {
+        roles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            return false;
+        }
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (doc.RootElement.TryGetProperty("roles", out var rolesArray))
+            {
+                foreach (var item in rolesArray.EnumerateArray())
+                {
+                    var value = item.GetString();
+                    if (!string.IsNullOrWhiteSpace(value))
+                    {
+                        roles.Add(value);
+                    }
+                }
+            }
+        }
+        catch
+        {
+            return false;
+        }
+
+        return roles.Count > 0;
+    }
+
+    private static bool TryReadRolesFromResourceAccess(string? json, out HashSet<string> roles)
+    {
+        roles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            return false;
+        }
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            foreach (var resource in doc.RootElement.EnumerateObject())
+            {
+                if (resource.Value.TryGetProperty("roles", out var rolesArray))
+                {
+                    foreach (var item in rolesArray.EnumerateArray())
+                    {
+                        var value = item.GetString();
+                        if (!string.IsNullOrWhiteSpace(value))
+                        {
+                            roles.Add(value);
+                        }
+                    }
+                }
+            }
+        }
+        catch
+        {
+            return false;
+        }
+
+        return roles.Count > 0;
+    }
+
     private string GetCategoryName(Guid categoryId)
     {
-        return categories.FirstOrDefault(c => c.Id == categoryId)?.Name ?? "—";
+        return categories.FirstOrDefault(c => c.Id == categoryId)?.Name ?? "-";
     }
 
     private string GetOrderNumber(Guid orderId)

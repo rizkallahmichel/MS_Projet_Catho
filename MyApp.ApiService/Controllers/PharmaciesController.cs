@@ -37,20 +37,28 @@ public class PharmaciesController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Policy = "RequireAdminRole")]
     public async Task<ActionResult<object>> CreatePharmacy(
         [FromBody] CreatePharmacyRequest request,
         CancellationToken cancellationToken)
     {
         var pharmacyId = await _mediator.Send(
-            new CreatePharmacyCommand(request.Name, request.Description, request.Address),
+            new CreatePharmacyCommand(
+                request.Name,
+                request.Description,
+                request.Address,
+                request.ManagerUsername,
+                request.ManagerEmail,
+                request.ManagerPassword,
+                request.ManagerFirstName,
+                request.ManagerLastName),
             cancellationToken);
 
         return CreatedAtAction(nameof(GetPharmacyById), new { pharmacyId }, new { id = pharmacyId });
     }
 
     [HttpPut("{pharmacyId:guid}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Policy = "RequireAdminRole")]
     public async Task<IActionResult> UpdatePharmacy(
         Guid pharmacyId,
         [FromBody] UpdatePharmacyRequest request,
@@ -64,7 +72,7 @@ public class PharmaciesController : ControllerBase
     }
 
     [HttpDelete("{pharmacyId:guid}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Policy = "RequireAdminRole")]
     public async Task<IActionResult> DeletePharmacy(Guid pharmacyId, CancellationToken cancellationToken)
     {
         await _mediator.Send(new DeletePharmacyCommand(pharmacyId), cancellationToken);

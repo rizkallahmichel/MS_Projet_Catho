@@ -1,8 +1,8 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "MyApp.ApiService",
-    "version": "1.0"
+    "title": "MyApp API",
+    "version": "v1"
   },
   "paths": {
     "/api/pharmacies": {
@@ -679,6 +679,26 @@
           "address": {
             "type": "string",
             "nullable": true
+          },
+          "managerUsername": {
+            "type": "string",
+            "nullable": true
+          },
+          "managerEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "managerPassword": {
+            "type": "string",
+            "nullable": true
+          },
+          "managerFirstName": {
+            "type": "string",
+            "nullable": true
+          },
+          "managerLastName": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -934,6 +954,31 @@
         },
         "additionalProperties": false
       }
+    },
+    "securitySchemes": {
+      "oauth2": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "http://localhost:8090/realms/myapp/protocol/openid-connect/auth",
+            "tokenUrl": "http://localhost:8090/realms/myapp/protocol/openid-connect/token",
+            "scopes": {
+              "api": "Access MyApp API",
+              "openid": "OpenID scope",
+              "profile": "User profile"
+            }
+          }
+        }
+      }
     }
-  }
+  },
+  "security": [
+    {
+      "oauth2": [
+        "api",
+        "openid",
+        "profile"
+      ]
+    }
+  ]
 }

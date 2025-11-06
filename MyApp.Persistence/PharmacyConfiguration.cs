@@ -27,6 +27,15 @@ public class PharmacyConfiguration : IEntityTypeConfiguration<Pharmacy>
         builder.Property(pharmacy => pharmacy.CreatedAt)
             .IsRequired();
 
+        builder.Property(pharmacy => pharmacy.ManagerUserId)
+            .HasMaxLength(200);
+
+        builder.Property(pharmacy => pharmacy.ManagerUsername)
+            .HasMaxLength(200);
+
+        builder.Property(pharmacy => pharmacy.ManagerEmail)
+            .HasMaxLength(256);
+
         builder.HasMany(pharmacy => pharmacy.Categories)
             .WithOne()
             .HasForeignKey(category => category.PharmacyId)

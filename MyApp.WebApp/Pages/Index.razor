@@ -3,6 +3,9 @@
 @inject ICmsApiClient CmsApiClient
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthStateProvider
+@using System.Collections.Generic
+@using System.Security.Claims
+@using System.Text.Json
 
 <PageTitle>Pharmacies</PageTitle>
 
@@ -21,6 +24,7 @@
         </div>
     }
 </div>
+
 
 @if (!string.IsNullOrEmpty(alertMessage))
 {
@@ -147,6 +151,41 @@ else
                     <ValidationMessage For="@(() => createModel.Address)" />
                 </div>
 
+                <div class="border-top pt-3 mt-4">
+                    <h3 class="h6 text-uppercase text-muted mb-3">Manager Account</h3>
+
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label">Username</label>
+                            <InputText class="form-control" @bind-Value="createModel.ManagerUsername" />
+                            <ValidationMessage For="@(() => createModel.ManagerUsername)" />
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label">Email</label>
+                            <InputText class="form-control" @bind-Value="createModel.ManagerEmail" />
+                            <ValidationMessage For="@(() => createModel.ManagerEmail)" />
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mt-0">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label">Password</label>
+                            <InputText class="form-control" @bind-Value="createModel.ManagerPassword" type="password" />
+                            <ValidationMessage For="@(() => createModel.ManagerPassword)" />
+                        </div>
+                        <div class="col-12 col-md-3">
+                            <label class="form-label">First name (optional)</label>
+                            <InputText class="form-control" @bind-Value="createModel.ManagerFirstName" />
+                            <ValidationMessage For="@(() => createModel.ManagerFirstName)" />
+                        </div>
+                        <div class="col-12 col-md-3">
+                            <label class="form-label">Last name (optional)</label>
+                            <InputText class="form-control" @bind-Value="createModel.ManagerLastName" />
+                            <ValidationMessage For="@(() => createModel.ManagerLastName)" />
+                        </div>
+                    </div>
+                </div>
+
                 <button class="btn btn-primary" type="submit" disabled="@isMutating">
                     @if (isMutating)
                     {
@@ -169,7 +208,6 @@ else
     private bool showCreateForm;
     private bool isMutating;
     private Guid? confirmDeleteId;
-
     private readonly CreatePharmacyFormModel createModel = new();
 
     protected override async Task OnInitializedAsync()
@@ -182,7 +220,7 @@ else
     {
         var authState = await AuthStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
-        isAdmin = user.IsInRole("Admin");
+        isAdmin = HasRole(user, "admin");
     }
 
     private async Task LoadPharmaciesAsync()
@@ -223,9 +261,17 @@ else
         alertMessage = null;
         try
         {
-            var request = new CreatePharmacyRequest(createModel.Name, createModel.Description, createModel.Address);
+            var request = new CreatePharmacyRequest(
+                createModel.Name,
+                createModel.Description,
+                createModel.Address,
+                createModel.ManagerUsername,
+                createModel.ManagerEmail,
+                createModel.ManagerPassword,
+                createModel.ManagerFirstName,
+                createModel.ManagerLastName);
             await CmsApiClient.CreatePharmacyAsync(request);
-            SetAlert("Pharmacy created successfully.", "success");
+            SetAlert($"Pharmacy created successfully. Manager account '{createModel.ManagerUsername}' is ready to sign in.", "success");
             HideCreateForm();
             await LoadPharmaciesAsync();
         }
@@ -289,6 +335,88 @@ else
 
     private static string GetStatusColor(bool isActive) => isActive ? "success" : "secondary";
 
+    private static bool HasRole(ClaimsPrincipal? user, string role) =>
+        user is not null && ResolveRoles(user).Contains(role, StringComparer.OrdinalIgnoreCase);
+
+    private static HashSet<string> ResolveRoles(ClaimsPrincipal user)
+    {
+        var roles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var claim in user.Claims)
+        {
+            if (!string.IsNullOrWhiteSpace(claim.Value) &&
+                (string.Equals(claim.Type, ClaimTypes.Role, StringComparison.OrdinalIgnoreCase) ||
+                 string.Equals(claim.Type, "role", StringComparison.OrdinalIgnoreCase)))
+            {
+                roles.Add(claim.Value);
+            }
+        }
+
+        MergeRolesFromRealmAccess(user.Claims.FirstOrDefault(c => c.Type == "realm_access")?.Value, roles);
+        MergeRolesFromResourceAccess(user.Claims.FirstOrDefault(c => c.Type == "resource_access")?.Value, roles);
+
+        return roles;
+    }
+
+    private static void MergeRolesFromRealmAccess(string? json, HashSet<string> roles)
+    {
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            return;
+        }
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (doc.RootElement.TryGetProperty("roles", out var rolesArray))
+            {
+                foreach (var item in rolesArray.EnumerateArray())
+                {
+                    var value = item.GetString();
+                    if (!string.IsNullOrWhiteSpace(value))
+                    {
+                        roles.Add(value);
+                    }
+                }
+            }
+        }
+        catch
+        {
+            // Ignore parsing issues
+        }
+    }
+
+    private static void MergeRolesFromResourceAccess(string? json, HashSet<string> roles)
+    {
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            return;
+        }
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            foreach (var resource in doc.RootElement.EnumerateObject())
+            {
+                if (resource.Value.TryGetProperty("roles", out var rolesArray))
+                {
+                    foreach (var item in rolesArray.EnumerateArray())
+                    {
+                        var value = item.GetString();
+                        if (!string.IsNullOrWhiteSpace(value))
+                        {
+                            roles.Add(value);
+                        }
+                    }
+                }
+            }
+        }
+        catch
+        {
+            // Ignore parsing issues
+        }
+    }
+
     private sealed class CreatePharmacyFormModel
     {
         [Required]
@@ -301,11 +429,35 @@ else
         [StringLength(400)]
         public string? Address { get; set; }
 
+        [Required]
+        [StringLength(100, MinimumLength = 3)]
+        public string ManagerUsername { get; set; } = string.Empty;
+
+        [Required]
+        [EmailAddress]
+        [StringLength(256)]
+        public string ManagerEmail { get; set; } = string.Empty;
+
+        [Required]
+        [StringLength(128, MinimumLength = 8)]
+        public string ManagerPassword { get; set; } = string.Empty;
+
+        [StringLength(100)]
+        public string? ManagerFirstName { get; set; }
+
+        [StringLength(100)]
+        public string? ManagerLastName { get; set; }
+
         public void Reset()
         {
             Name = string.Empty;
             Description = null;
             Address = null;
+            ManagerUsername = string.Empty;
+            ManagerEmail = string.Empty;
+            ManagerPassword = string.Empty;
+            ManagerFirstName = null;
+            ManagerLastName = null;
         }
     }
 }

@@ -36,7 +36,7 @@ public class PharmacyProductsController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin,Pharmacy")]
+    [Authorize(Policy = "RequireAdminOrPharmacyRole")]
     public async Task<ActionResult<object>> CreateProduct(
         Guid pharmacyId,
         [FromBody] CreateProductRequest request,
@@ -56,7 +56,7 @@ public class PharmacyProductsController : ControllerBase
     }
 
     [HttpPut("{productId:guid}")]
-    [Authorize(Roles = "Admin,Pharmacy")]
+    [Authorize(Policy = "RequireAdminOrPharmacyRole")]
     public async Task<IActionResult> UpdateProduct(
         Guid pharmacyId,
         Guid productId,
@@ -78,7 +78,7 @@ public class PharmacyProductsController : ControllerBase
     }
 
     [HttpDelete("{productId:guid}")]
-    [Authorize(Roles = "Admin,Pharmacy")]
+    [Authorize(Policy = "RequireAdminOrPharmacyRole")]
     public async Task<IActionResult> DeleteProduct(Guid pharmacyId, Guid productId, CancellationToken cancellationToken)
     {
         await _mediator.Send(new DeleteProductCommand(pharmacyId, productId), cancellationToken);

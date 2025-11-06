@@ -30,7 +30,7 @@ public class PharmacyCategoriesController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin,Pharmacy")]
+    [Authorize(Policy = "RequireAdminOrPharmacyRole")]
     public async Task<ActionResult<object>> CreateCategory(
         Guid pharmacyId,
         [FromBody] CreateCategoryRequest request,
@@ -44,7 +44,7 @@ public class PharmacyCategoriesController : ControllerBase
     }
 
     [HttpPut("{categoryId:guid}")]
-    [Authorize(Roles = "Admin,Pharmacy")]
+    [Authorize(Policy = "RequireAdminOrPharmacyRole")]
     public async Task<IActionResult> UpdateCategory(
         Guid pharmacyId,
         Guid categoryId,
@@ -59,7 +59,7 @@ public class PharmacyCategoriesController : ControllerBase
     }
 
     [HttpDelete("{categoryId:guid}")]
-    [Authorize(Roles = "Admin,Pharmacy")]
+    [Authorize(Policy = "RequireAdminOrPharmacyRole")]
     public async Task<IActionResult> DeleteCategory(Guid pharmacyId, Guid categoryId, CancellationToken cancellationToken)
     {
         await _mediator.Send(new DeleteCategoryCommand(pharmacyId, categoryId), cancellationToken);

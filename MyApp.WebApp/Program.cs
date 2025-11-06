@@ -1,5 +1,5 @@
-using System;
-using System.Linq;
+using System.Security.Claims;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -11,10 +11,16 @@ using MyApp.WebApp.Clients;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// --------------------
+// UI & Core Setup
+// --------------------
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.AddServiceDefaults();
 
+// --------------------
+// Authentication
+// --------------------
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -34,23 +40,96 @@ builder.Services.AddAuthentication(options =>
     options.SignedOutCallbackPath = "/signout-callback-oidc";
     options.UseTokenLifetime = true;
     options.MapInboundClaims = false;
-    options.Scope.Add("api");
+
+    // Requested scopes
+    options.Scope.Add("openid");
     options.Scope.Add("profile");
+    options.Scope.Add("email");
+    options.Scope.Add("api");
 
+    // Claim mapping
+    options.ClaimActions.MapJsonKey(ClaimTypes.Name, "preferred_username");
+    options.ClaimActions.MapJsonKey(ClaimTypes.Email, "email");
     options.ClaimActions.MapJsonKey("preferred_username", "preferred_username");
-    options.ClaimActions.MapJsonSubKey("role", "realm_access", "roles");
-    options.ClaimActions.MapJsonSubKey("role", "resource_access", "roles");
+    options.ClaimActions.MapJsonKey("realm_access", "realm_access");
+    options.ClaimActions.MapJsonKey("resource_access", "resource_access");
 
+    // Ensure .NET knows what the "role" claim is
     options.TokenValidationParameters = new TokenValidationParameters
     {
-        NameClaimType = "name",
-        RoleClaimType = "role"
+        NameClaimType = ClaimTypes.Name,
+        RoleClaimType = ClaimTypes.Role
+    };
+
+    // Merge Keycloak roles into .NET roles
+    options.Events = new OpenIdConnectEvents
+    {
+        OnTokenValidated = context =>
+        {
+            var identity = (ClaimsIdentity)context.Principal.Identity;
+
+            var allRoles = new List<string>();
+
+            // Extract realm_access.roles
+            var realmAccessClaim = context.Principal.FindFirst("realm_access")?.Value;
+            if (!string.IsNullOrEmpty(realmAccessClaim))
+            {
+                try
+                {
+                    using var doc = JsonDocument.Parse(realmAccessClaim);
+                    if (doc.RootElement.TryGetProperty("roles", out var rolesArray))
+                    {
+                        foreach (var role in rolesArray.EnumerateArray())
+                        {
+                            allRoles.Add(role.GetString());
+                        }
+                    }
+                }
+                catch { }
+            }
+
+            // Extract resource_access.*.roles
+            var resourceAccessClaim = context.Principal.FindFirst("resource_access")?.Value;
+            if (!string.IsNullOrEmpty(resourceAccessClaim))
+            {
+                try
+                {
+                    using var doc = JsonDocument.Parse(resourceAccessClaim);
+                    foreach (var resource in doc.RootElement.EnumerateObject())
+                    {
+                        if (resource.Value.TryGetProperty("roles", out var rolesArray))
+                        {
+                            foreach (var role in rolesArray.EnumerateArray())
+                            {
+                                allRoles.Add(role.GetString());
+                            }
+                        }
+                    }
+                }
+                catch { }
+            }
+
+            // Add all roles as ClaimTypes.Role
+            foreach (var role in allRoles.Distinct())
+            {
+                identity.AddClaim(new Claim(ClaimTypes.Role, role));
+            }
+
+            return Task.CompletedTask;
+        }
     };
 });
 
-builder.Services.ConfigureCookieOidc(CookieAuthenticationDefaults.AuthenticationScheme, "oidc");
+// --------------------
+// Authorization
+// --------------------
 builder.Services.AddAuthorization();
 builder.Services.AddHttpContextAccessor();
+builder.Services.ConfigureCookieOidc(CookieAuthenticationDefaults.AuthenticationScheme, "oidc");
+
+// --------------------
+// API Client Setup
+// --------------------
 builder.Services.AddTransient<ApiTokenHandler>();
 
 var apiBaseAddress = builder.Configuration["Api:BaseAddress"];
@@ -64,6 +143,9 @@ builder.Services.AddHttpClient<ICmsApiClient, CmsApiClient>(client =>
     client.BaseAddress = new Uri(apiBaseAddress);
 }).AddHttpMessageHandler<ApiTokenHandler>();
 
+// --------------------
+// Build App
+// --------------------
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -78,6 +160,9 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+// --------------------
+// Authentication Endpoints
+// --------------------
 app.MapGet("/authentication/login", async (HttpContext context) =>
 {
     var returnUrl = context.Request.Query["returnUrl"].FirstOrDefault();
@@ -109,6 +194,9 @@ app.MapGet("/authentication/logout", async (HttpContext context) =>
     }
 }).AllowAnonymous();
 
+// --------------------
+// Blazor Mapping
+// --------------------
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 

@@ -30,6 +30,9 @@ public class Pharmacy : Entity
     public bool IsActive { get; private set; }
     public DateTimeOffset CreatedAt { get; private set; }
     public DateTimeOffset? UpdatedAt { get; private set; }
+    public string? ManagerUserId { get; private set; }
+    public string? ManagerUsername { get; private set; }
+    public string? ManagerEmail { get; private set; }
 
     public IReadOnlyCollection<Category> Categories => _categories.AsReadOnly();
     public IReadOnlyCollection<Product> Products => _products.AsReadOnly();
@@ -89,6 +92,18 @@ public class Pharmacy : Entity
     public void RemoveProduct(Guid productId)
     {
         _products.RemoveAll(product => product.Id == productId);
+    }
+
+    public void AssignManager(string managerUserId, string managerUsername, string managerEmail)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(managerUserId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(managerUsername);
+        ArgumentException.ThrowIfNullOrWhiteSpace(managerEmail);
+
+        ManagerUserId = managerUserId;
+        ManagerUsername = managerUsername.Trim();
+        ManagerEmail = managerEmail.Trim();
+        Touch();
     }
 
     private void Touch()

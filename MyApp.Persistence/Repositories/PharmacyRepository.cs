@@ -39,4 +39,24 @@ public class PharmacyRepository : IPharmacyRepository
             .Include(pharmacy => pharmacy.Products)
             .FirstOrDefaultAsync(pharmacy => pharmacy.Id == id, cancellationToken);
     }
+
+    public async Task<Pharmacy?> GetByManagerUserIdAsync(string managerUserId, CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(managerUserId);
+
+        return await _dbContext.Pharmacies
+            .Include(pharmacy => pharmacy.Categories)
+            .Include(pharmacy => pharmacy.Products)
+            .FirstOrDefaultAsync(pharmacy => pharmacy.ManagerUserId == managerUserId, cancellationToken);
+    }
+
+    public async Task<Pharmacy?> GetByManagerUsernameAsync(string managerUsername, CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(managerUsername);
+
+        return await _dbContext.Pharmacies
+            .Include(pharmacy => pharmacy.Categories)
+            .Include(pharmacy => pharmacy.Products)
+            .FirstOrDefaultAsync(pharmacy => pharmacy.ManagerUsername == managerUsername, cancellationToken);
+    }
 }

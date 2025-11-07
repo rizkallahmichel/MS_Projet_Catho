@@ -204,6 +204,19 @@ public class CmsApiClient : ICmsApiClient
         return result ?? Array.Empty<PaymentModel>();
     }
 
+    public async Task<PharmacyDetailsModel?> GetManagedPharmacyAsync(CancellationToken cancellationToken = default)
+    {
+        var response = await _httpClient.GetAsync("api/pharmacies/mine", cancellationToken);
+
+        if (response.StatusCode == HttpStatusCode.NotFound)
+        {
+            return null;
+        }
+
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<PharmacyDetailsModel>(SerializerOptions, cancellationToken);
+    }
+
     private sealed record IdResponse(Guid Id);
     private sealed record OrderCreatedResponse(Guid Id, string OrderNumber);
 }

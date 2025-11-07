@@ -1,3 +1,4 @@
+using System;
 using Microsoft.EntityFrameworkCore;
 using MyApp.Domain.Payments;
 
@@ -34,5 +35,11 @@ public class PaymentRepository : IPaymentRepository
             .AsNoTracking()
             .OrderByDescending(payment => payment.PaidAt)
             .ToListAsync(cancellationToken);
+    }
+
+    public async Task AddAsync(Payment payment, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(payment);
+        await _dbContext.Payments.AddAsync(payment, cancellationToken);
     }
 }

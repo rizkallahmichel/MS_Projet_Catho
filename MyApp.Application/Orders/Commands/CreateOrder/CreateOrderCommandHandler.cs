@@ -1,6 +1,7 @@
 using MediatR;
 using MyApp.Domain.Abstractions;
 using MyApp.Domain.Orders;
+using MyApp.Domain.Payments;
 using MyApp.Domain.Pharmacies;
 using MyApp.Domain.Products;
 using System;
@@ -14,17 +15,20 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Cre
     private readonly IPharmacyRepository _pharmacyRepository;
     private readonly IProductRepository _productRepository;
     private readonly IOrderRepository _orderRepository;
+    private readonly IPaymentRepository _paymentRepository;
     private readonly IUnitOfWork _unitOfWork;
 
     public CreateOrderCommandHandler(
         IPharmacyRepository pharmacyRepository,
         IProductRepository productRepository,
         IOrderRepository orderRepository,
+        IPaymentRepository paymentRepository,
         IUnitOfWork unitOfWork)
     {
         _pharmacyRepository = pharmacyRepository;
         _productRepository = productRepository;
         _orderRepository = orderRepository;
+        _paymentRepository = paymentRepository;
         _unitOfWork = unitOfWork;
     }
 
@@ -80,6 +84,15 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Cre
             orderLinePayload);
 
         await _orderRepository.AddAsync(order, cancellationToken);
+
+        var payment = Payment.Create(
+            order.Id,
+            order.TotalAmount,
+            DateTimeOffset.UtcNow,
+            "Pending",
+            "PayOnDelivery");
+
+        await _paymentRepository.AddAsync(payment, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return new CreateOrderResult(order.Id, order.OrderNumber);

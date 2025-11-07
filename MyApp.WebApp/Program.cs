@@ -53,6 +53,7 @@ builder.Services.AddAuthentication(options =>
     options.ClaimActions.MapJsonKey("preferred_username", "preferred_username");
     options.ClaimActions.MapJsonKey("realm_access", "realm_access");
     options.ClaimActions.MapJsonKey("resource_access", "resource_access");
+    options.ClaimActions.MapJsonKey("pharmacyId", "pharmacyId");
 
     // Ensure .NET knows what the "role" claim is
     options.TokenValidationParameters = new TokenValidationParameters

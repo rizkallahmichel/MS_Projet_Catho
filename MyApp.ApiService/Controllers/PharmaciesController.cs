@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,7 @@ using MyApp.Application.Pharmacies.Commands.DeletePharmacy;
 using MyApp.Application.Pharmacies.Commands.UpdatePharmacy;
 using MyApp.Application.Pharmacies.Queries.GetPharmacies;
 using MyApp.Application.Pharmacies.Queries.GetPharmacyById;
+using MyApp.Application.Pharmacies.Queries.GetPharmacyByManagerUserId;
 
 namespace MyApp.ApiService.Controllers;
 
@@ -33,6 +35,26 @@ public class PharmaciesController : ControllerBase
     public async Task<ActionResult<PharmacyDetailsDto>> GetPharmacyById(Guid pharmacyId, CancellationToken cancellationToken)
     {
         var response = await _mediator.Send(new GetPharmacyByIdQuery(pharmacyId), cancellationToken);
+        return Ok(response);
+    }
+
+    [HttpGet("mine")]
+    [Authorize(Roles = "pharmacy")]
+    public async Task<ActionResult<PharmacyDetailsDto>> GetManagedPharmacy(CancellationToken cancellationToken)
+    {
+        var managerUserId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue("sub");
+        var managerUsername = User.FindFirstValue("preferred_username") ?? User.Identity?.Name;
+        if (string.IsNullOrWhiteSpace(managerUserId) && string.IsNullOrWhiteSpace(managerUsername))
+        {
+            return Forbid();
+        }
+
+        var response = await _mediator.Send(new GetPharmacyByManagerUserIdQuery(managerUserId, managerUsername), cancellationToken);
+        if (response is null)
+        {
+            return NotFound();
+        }
+
         return Ok(response);
     }
 

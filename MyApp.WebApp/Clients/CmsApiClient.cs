@@ -1,4 +1,6 @@
+using System;
 using System.Net;
+using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
 using MyApp.WebApp.Clients.Models;
@@ -194,6 +196,25 @@ public class CmsApiClient : ICmsApiClient
         return new OrderCreatedResult(payload.Id, payload.OrderNumber);
     }
 
+    public async Task<PaymentModel> EnsurePayOnDeliveryPaymentAsync(Guid pharmacyId, CreatePaymentRequest request, CancellationToken cancellationToken = default)
+    {
+        var response = await _httpClient.PostAsJsonAsync(
+            $"api/pharmacies/{pharmacyId}/payments",
+            request,
+            SerializerOptions,
+            cancellationToken);
+
+        response.EnsureSuccessStatusCode();
+
+        var payload = await response.Content.ReadFromJsonAsync<PaymentModel>(SerializerOptions, cancellationToken);
+        if (payload is null)
+        {
+            throw new InvalidOperationException("Payment could not be recorded.");
+        }
+
+        return payload;
+    }
+
     public async Task<IReadOnlyList<PaymentModel>> GetPaymentsAsync(Guid pharmacyId, Guid? orderId = null, CancellationToken cancellationToken = default)
     {
         var uri = orderId.HasValue
@@ -202,6 +223,19 @@ public class CmsApiClient : ICmsApiClient
 
         var result = await _httpClient.GetFromJsonAsync<IReadOnlyList<PaymentModel>>(uri, SerializerOptions, cancellationToken);
         return result ?? Array.Empty<PaymentModel>();
+    }
+
+    public async Task UpdatePaymentStatusAsync(Guid pharmacyId, Guid paymentId, UpdatePaymentStatusRequest request, CancellationToken cancellationToken = default)
+    {
+        using var message = new HttpRequestMessage(
+            HttpMethod.Patch,
+            $"api/pharmacies/{pharmacyId}/payments/{paymentId}/status")
+        {
+            Content = JsonContent.Create(request, options: SerializerOptions)
+        };
+
+        var response = await _httpClient.SendAsync(message, cancellationToken);
+        response.EnsureSuccessStatusCode();
     }
 
     public async Task<PharmacyDetailsModel?> GetManagedPharmacyAsync(CancellationToken cancellationToken = default)

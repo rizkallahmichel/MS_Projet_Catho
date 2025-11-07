@@ -1,0 +1,545 @@
+@using System.Collections.Generic
+@using MyApp.WebApp.Clients.Models
+@using MyApp.WebApp.Clients.Models.Requests
+@using MyApp.WebApp.Clients.Models.Shared
+
+@inject ICmsApiClient CmsApiClient
+
+@if (isLoading)
+{
+    <div class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading your pharmacy dashboard...</span>
+        </div>
+    </div>
+}
+else if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger" role="alert">
+        <strong>We couldn't load your pharmacy.</strong>
+        <div class="small text-break mt-2">@errorMessage</div>
+        <button class="btn btn-outline-danger btn-sm mt-3" @onclick="ReloadAsync">
+            <span class="oi oi-reload me-1" aria-hidden="true"></span>
+            Try again
+        </button>
+    </div>
+}
+else if (pharmacy is not null)
+{
+    <div class="row g-4 align-items-start">
+        <aside class="col-12 col-xl-4 col-xxl-3">
+            <div class="card shadow-sm border-0 sticky-top" style="top: 1.5rem;">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <p class="text-muted small mb-1">Pharmacy</p>
+                            <h2 class="h5 mb-0">@pharmacy.Name</h2>
+                        </div>
+                        <span class="badge bg-@GetStatusColor(pharmacy.IsActive)">
+                            @(pharmacy.IsActive ? "Active" : "Inactive")
+                        </span>
+                    </div>
+
+                    <p class="text-muted small mb-4">
+                        @(!string.IsNullOrWhiteSpace(pharmacy.Address) ? pharmacy.Address : "No address has been provided.")
+                    </p>
+
+                    <div class="list-group rounded-3 overflow-hidden">
+                        <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @NavClass(SectionOverview)" @onclick="@(() => SelectSection(SectionOverview))">
+                            <span><span class="oi oi-home me-2" aria-hidden="true"></span>Overview</span>
+                            <span class="badge bg-light text-dark">@payments.Count</span>
+                        </button>
+                        <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @NavClass(SectionCategories)" @onclick="@(() => SelectSection(SectionCategories))">
+                            <span><span class="oi oi-layers me-2" aria-hidden="true"></span>Categories</span>
+                            <span class="badge bg-light text-dark">@pharmacy.Categories.Count</span>
+                        </button>
+                        <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @NavClass(SectionProducts)" @onclick="@(() => SelectSection(SectionProducts))">
+                            <span><span class="oi oi-list-rich me-2" aria-hidden="true"></span>Products</span>
+                            <span class="badge bg-light text-dark">@pharmacy.Products.Count</span>
+                        </button>
+                        <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @NavClass(SectionPayments)" @onclick="@(() => SelectSection(SectionPayments))">
+                            <span><span class="oi oi-credit-card me-2" aria-hidden="true"></span>Payments</span>
+                            <span class="badge bg-light text-dark">@payments.Count</span>
+                        </button>
+                    </div>
+
+                    <dl class="row small mt-4 mb-0">
+                        <dt class="col-6">Orders</dt>
+                        <dd class="col-6 text-end">@orders.Count</dd>
+                        <dt class="col-6">Payments</dt>
+                        <dd class="col-6 text-end">@payments.Count</dd>
+                        <dt class="col-6">Revenue</dt>
+                        <dd class="col-6 text-end">@TotalPaymentsAmount.ToString("C")</dd>
+                    </dl>
+                </div>
+                <div class="card-footer bg-white d-flex justify-content-between align-items-center">
+                    <small class="text-muted">
+                        Updated @(pharmacy.UpdatedAt?.LocalDateTime.ToString("dd MMM yyyy HH:mm") ?? "just now")
+                    </small>
+                    <button class="btn btn-outline-secondary btn-sm" @onclick="ReloadAsync" disabled="@isLoading">
+                        <span class="oi oi-reload me-1" aria-hidden="true"></span>
+                        Refresh
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <section class="col-12 col-xl-8 col-xxl-9">
+            @if (activeSection == SectionOverview)
+            {
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body">
+                        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3">
+                            <div class="col">
+                                <div class="card border-0 shadow-sm h-100">
+                                    <div class="card-body">
+                                        <p class="text-muted small mb-1">Categories</p>
+                                        <h3 class="mb-0">@pharmacy.Categories.Count</h3>
+                                        <small class="@(ActiveCategoriesCount > 0 ? "text-success" : "text-muted")">
+                                            @ActiveCategoriesCount active
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card border-0 shadow-sm h-100">
+                                    <div class="card-body">
+                                        <p class="text-muted small mb-1">Products</p>
+                                        <h3 class="mb-0">@pharmacy.Products.Count</h3>
+                                        <small class="@(ActiveProductsCount > 0 ? "text-success" : "text-muted")">
+                                            @ActiveProductsCount available
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card border-0 shadow-sm h-100">
+                                    <div class="card-body">
+                                        <p class="text-muted small mb-1">Orders</p>
+                                        <h3 class="mb-0">@orders.Count</h3>
+                                        <small class="text-muted">
+                                            @((orders.Count > 0 ? $"Last order {FormatOrderDate(orders.First().OrderedAt)}" : "No orders yet"))
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card border-0 shadow-sm h-100">
+                                    <div class="card-body">
+                                        <p class="text-muted small mb-1">Payments volume</p>
+                                        <h3 class="mb-0">@TotalPaymentsAmount.ToString("C")</h3>
+                                        <small class="text-muted">@payments.Count @(payments.Count == 1 ? "payment" : "payments")</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="h5 mb-0">Recent payments</h3>
+                            <small class="text-muted">Live history of your latest transactions.</small>
+                        </div>
+                        <span class="badge bg-secondary">@payments.Count total</span>
+                    </div>
+                    @if (payments.Count == 0)
+                    {
+                        <div class="p-4 text-center text-muted">
+                            No payments have been recorded yet.
+                        </div>
+                    }
+                    else
+                    {
+                        <ul class="list-group list-group-flush">
+                            @foreach (var payment in payments.Take(5))
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="fw-semibold">@payment.Method</div>
+                                        <small class="text-muted">
+                                            @FormatPaymentDate(payment.PaidAt) · Order @GetOrderNumber(payment.OrderId)
+                                        </small>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="fw-semibold">@payment.Amount.ToString("C")</div>
+                                        <span class="badge bg-@GetPaymentStatusBadge(payment.Status)">@payment.Status</span>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                        <div class="p-3 border-top text-end small text-muted">
+                            Showing latest @Math.Min(5, payments.Count) of @payments.Count payments.
+                        </div>
+                    }
+                </div>
+            }
+            else if (activeSection == SectionCategories)
+            {
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h3 class="h5 mb-0">Categories</h3>
+                        <span class="badge bg-secondary">@pharmacy.Categories.Count total</span>
+                    </div>
+                    <div class="card-body p-0">
+                        @if (pharmacy.Categories.Count == 0)
+                        {
+                            <div class="p-4 text-center text-muted">No categories have been created yet.</div>
+                        }
+                        else
+                        {
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                            <th class="text-end">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var category in pharmacy.Categories
+                                            .OrderByDescending(category => category.IsActive)
+                                            .ThenBy(category => category.Name))
+                                        {
+                                            <tr>
+                                                <td>@category.Name</td>
+                                                <td class="text-muted">
+                                                    @(!string.IsNullOrWhiteSpace(category.Description) ? category.Description : "No description")
+                                                </td>
+                                                <td class="text-end">
+                                                    <span class="badge bg-@FormatStatusBadge(category.IsActive)">
+                                                        @(category.IsActive ? "Active" : "Inactive")
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+            else if (activeSection == SectionProducts)
+            {
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h3 class="h5 mb-0">Products</h3>
+                        <span class="badge bg-secondary">@pharmacy.Products.Count total</span>
+                    </div>
+                    <div class="card-body p-0">
+                        @if (pharmacy.Products.Count == 0)
+                        {
+                            <div class="p-4 text-center text-muted">No products are available yet.</div>
+                        }
+                        else
+                        {
+                            <div class="table-responsive">
+                                <table class="table table-striped align-middle mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Product</th>
+                                            <th>Category</th>
+                                            <th class="text-end">Price</th>
+                                            <th class="text-end">Stock</th>
+                                            <th class="text-end">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var product in pharmacy.Products
+                                            .OrderByDescending(product => product.IsActive)
+                                            .ThenBy(product => product.Name))
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <div class="fw-semibold">@product.Name</div>
+                                                    @if (!string.IsNullOrWhiteSpace(product.Description))
+                                                    {
+                                                        <div class="small text-muted">@product.Description</div>
+                                                    }
+                                                </td>
+                                                <td>@GetCategoryName(product.CategoryId)</td>
+                                                <td class="text-end">@product.Price.ToString("C")</td>
+                                                <td class="text-end">@product.StockQuantity</td>
+                                                <td class="text-end">
+                                                    <span class="badge bg-@FormatStatusBadge(product.IsActive)">
+                                                        @(product.IsActive ? "Active" : "Inactive")
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+            else if (activeSection == SectionPayments)
+            {
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h3 class="h5 mb-0">Payments history</h3>
+                        <span class="badge bg-secondary">@payments.Count entries</span>
+                    </div>
+                    <div class="card-body p-0">
+                        @if (!string.IsNullOrEmpty(paymentStatusAlert))
+                        {
+                            <div class="alert alert-@paymentStatusAlertStyle rounded-0 border-bottom mb-0">
+                                <div class="d-flex justify-content-between align-items-start gap-3">
+                                    <div>@paymentStatusAlert</div>
+                                    <button type="button" class="btn-close" aria-label="Close" @onclick="@(() => paymentStatusAlert = null)"></button>
+                                </div>
+                            </div>
+                        }
+                        @if (payments.Count == 0)
+                        {
+                            <div class="p-4 text-center text-muted">No payments recorded yet.</div>
+                        }
+                        else
+                        {
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Payment</th>
+                                            <th>Date</th>
+                                            <th>Order</th>
+                                            <th>Method</th>
+                                            <th>Status</th>
+                                            <th class="text-end">Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var payment in payments)
+                                        {
+                                            <tr>
+                                                <td>@payment.Id.ToString("N")[..8].ToUpperInvariant()</td>
+                                                <td>@FormatPaymentDate(payment.PaidAt)</td>
+                                                <td>@GetOrderNumber(payment.OrderId)</td>
+                                                <td>@payment.Method</td>
+                                                <td>
+                                                    <div class="d-flex flex-wrap align-items-center gap-2">
+                                                        <span class="badge bg-@GetPaymentStatusBadge(payment.Status)">@payment.Status</span>
+                                                        @if (IsPendingPayment(payment.Status))
+                                                        {
+                                                            <button type="button"
+                                                                    class="btn btn-sm btn-outline-success"
+                                                                    disabled="@(updatingPaymentId == payment.Id)"
+                                                                    @onclick="@(() => MarkPaymentAsDoneAsync(payment.Id))">
+                                                                @if (updatingPaymentId == payment.Id)
+                                                                {
+                                                                    <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                                                                }
+                                                                Mark as done
+                                                            </button>
+                                                        }
+                                                    </div>
+                                                </td>
+                                                <td class="text-end">@payment.Amount.ToString("C")</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </section>
+    </div>
+}
+else
+{
+    <div class="alert alert-info" role="alert">
+        We were unable to find a pharmacy linked to this account.
+    </div>
+}
+
+@code {
+    [Parameter]
+    public Guid PharmacyId { get; set; }
+    [Parameter]
+    public PharmacyDetailsModel? PrefetchedPharmacy { get; set; }
+
+    private const string SectionOverview = "overview";
+    private const string SectionCategories = "categories";
+    private const string SectionProducts = "products";
+    private const string SectionPayments = "payments";
+
+    private readonly List<OrderSummaryModel> orders = [];
+    private readonly List<PaymentModel> payments = [];
+
+    private PharmacyDetailsModel? pharmacy;
+    private string activeSection = SectionOverview;
+    private bool isLoading = true;
+    private string? errorMessage;
+    private Guid currentPharmacyId;
+    private Guid? updatingPaymentId;
+    private string? paymentStatusAlert;
+    private string paymentStatusAlertStyle = "success";
+
+    private int ActiveCategoriesCount => pharmacy?.Categories.Count(category => category.IsActive) ?? 0;
+    private int ActiveProductsCount => pharmacy?.Products.Count(product => product.IsActive) ?? 0;
+    private decimal TotalPaymentsAmount => payments.Sum(payment => payment.Amount);
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (PharmacyId == Guid.Empty)
+        {
+            errorMessage = "A valid pharmacy identifier is required.";
+            pharmacy = null;
+            isLoading = false;
+            return;
+        }
+
+        if (PharmacyId == currentPharmacyId && pharmacy is not null)
+        {
+            return;
+        }
+
+        currentPharmacyId = PharmacyId;
+        await LoadDashboardAsync();
+    }
+
+    private async Task LoadDashboardAsync()
+    {
+        isLoading = true;
+        errorMessage = null;
+
+        try
+        {
+            PharmacyDetailsModel? details = null;
+            if (PrefetchedPharmacy is not null && PrefetchedPharmacy.Id == PharmacyId)
+            {
+                details = PrefetchedPharmacy;
+            }
+            else
+            {
+                details = await CmsApiClient.GetPharmacyAsync(PharmacyId);
+            }
+
+            if (details is null)
+            {
+                errorMessage = "This pharmacy could not be found or you do not have access to it.";
+                pharmacy = null;
+                return;
+            }
+
+            pharmacy = details;
+
+            orders.Clear();
+            payments.Clear();
+
+            var ordersResult = await CmsApiClient.GetOrdersAsync(PharmacyId);
+            orders.AddRange(ordersResult.OrderByDescending(order => order.OrderedAt));
+
+            var paymentsResult = await CmsApiClient.GetPaymentsAsync(PharmacyId);
+            payments.AddRange(paymentsResult.OrderByDescending(payment => payment.PaidAt));
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+            pharmacy = null;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task ReloadAsync()
+    {
+        await LoadDashboardAsync();
+    }
+
+    private bool IsPendingPayment(string? status) =>
+        string.IsNullOrWhiteSpace(status) ||
+        status.Equals("pending", StringComparison.OrdinalIgnoreCase);
+
+    private async Task MarkPaymentAsDoneAsync(Guid paymentId)
+    {
+        paymentStatusAlert = null;
+        paymentStatusAlertStyle = "success";
+        updatingPaymentId = paymentId;
+
+        const string targetStatus = "Done";
+
+        try
+        {
+            await CmsApiClient.UpdatePaymentStatusAsync(
+                PharmacyId,
+                paymentId,
+                new UpdatePaymentStatusRequest(targetStatus));
+
+            var index = payments.FindIndex(payment => payment.Id == paymentId);
+            if (index >= 0)
+            {
+                payments[index] = payments[index] with { Status = targetStatus };
+
+                var orderIndex = orders.FindIndex(order => order.Id == payments[index].OrderId);
+                if (orderIndex >= 0)
+                {
+                    orders[orderIndex] = orders[orderIndex] with { Status = targetStatus };
+                }
+            }
+
+            paymentStatusAlert = "Payment marked as done.";
+        }
+        catch (Exception ex)
+        {
+            paymentStatusAlert = $"Unable to update payment: {ex.Message}";
+            paymentStatusAlertStyle = "danger";
+        }
+        finally
+        {
+            updatingPaymentId = null;
+        }
+    }
+
+    private void SelectSection(string section)
+    {
+        activeSection = section;
+    }
+
+    private string NavClass(string section) =>
+        activeSection == section ? "active" : string.Empty;
+
+    private static string GetStatusColor(bool isActive) => isActive ? "success" : "secondary";
+
+    private static string FormatStatusBadge(bool isActive) => isActive ? "success" : "secondary";
+
+    private static string GetPaymentStatusBadge(string status) =>
+        status?.ToLowerInvariant() switch
+        {
+            "paid" or "completed" => "success",
+            "pending" or "processing" => "warning",
+            "failed" or "declined" => "danger",
+            _ => "secondary"
+        };
+
+    private string GetCategoryName(Guid categoryId)
+    {
+        if (pharmacy is null)
+        {
+            return "Uncategorized";
+        }
+
+        var match = pharmacy.Categories.FirstOrDefault(category => category.Id == categoryId);
+        return match?.Name ?? "Uncategorized";
+    }
+
+    private string GetOrderNumber(Guid orderId)
+    {
+        var order = orders.FirstOrDefault(order => order.Id == orderId);
+        return order?.OrderNumber ?? "—";
+    }
+
+    private static string FormatPaymentDate(DateTimeOffset dateTime) =>
+        dateTime.LocalDateTime.ToString("dd MMM yyyy HH:mm");
+
+    private static string FormatOrderDate(DateTimeOffset dateTime) =>
+        dateTime.LocalDateTime.ToString("dd MMM yyyy");
+}

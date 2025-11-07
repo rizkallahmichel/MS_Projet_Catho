@@ -297,6 +297,63 @@
     ]
   },
   {
+    "ContainingType": "MyApp.ApiService.Controllers.PharmacyPaymentsController",
+    "Method": "CreatePayment",
+    "RelativePath": "api/pharmacies/{pharmacyId}/payments",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pharmacyId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "MyApp.ApiService.Contracts.Payments.CreatePaymentRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MyApp.Application.Common.Models.PaymentDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyApp.ApiService.Controllers.PharmacyPaymentsController",
+    "Method": "UpdatePaymentStatus",
+    "RelativePath": "api/pharmacies/{pharmacyId}/payments/{paymentId}/status",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pharmacyId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "paymentId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "MyApp.ApiService.Contracts.Payments.UpdatePaymentStatusRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "MyApp.ApiService.Controllers.PharmacyProductsController",
     "Method": "GetProducts",
     "RelativePath": "api/pharmacies/{pharmacyId}/products",
@@ -394,5 +451,25 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.ApiService.Controllers.PharmaciesController",
+    "Method": "GetManagedPharmacy",
+    "RelativePath": "api/pharmacies/mine",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "MyApp.Application.Pharmacies.Queries.GetPharmacyById.PharmacyDetailsDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
   }
 ]

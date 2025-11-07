@@ -37,6 +37,12 @@ public class PaymentRepository : IPaymentRepository
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<Payment?> GetByIdAsync(Guid paymentId, CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Payments
+            .FirstOrDefaultAsync(payment => payment.Id == paymentId, cancellationToken);
+    }
+
     public async Task AddAsync(Payment payment, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(payment);

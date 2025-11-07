@@ -1,11 +1,5 @@
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ApiService.Tests\bin\Debug\net9.0\.msCoverageSourceRootsMapping_MyApp.ApiService.Tests
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ApiService.Tests\bin\Debug\net9.0\CoverletSourceRootsMapping_MyApp.ApiService.Tests
-D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ApiService.Tests\obj\Debug\net9.0\MyApp.ApiService.Tests.csproj.AssemblyReference.cache
-D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ApiService.Tests\obj\Debug\net9.0\MyApp.ApiService.Tests.GeneratedMSBuildEditorConfig.editorconfig
-D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ApiService.Tests\obj\Debug\net9.0\MyApp.ApiService.Tests.AssemblyInfoInputs.cache
-D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ApiService.Tests\obj\Debug\net9.0\MyApp.ApiService.Tests.AssemblyInfo.cs
-D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ApiService.Tests\obj\Debug\net9.0\MyApp.ApiService.Tests.csproj.CoreCompileInputs.cache
-D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ApiService.Tests\obj\Debug\net9.0\MyApp.ApiService.Tests.sourcelink.json
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ApiService.Tests\bin\Debug\net9.0\testhost.dll
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ApiService.Tests\bin\Debug\net9.0\MyApp.ApiService.deps.json
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ApiService.Tests\bin\Debug\net9.0\MyApp.ApiService.runtimeconfig.json
@@ -210,6 +204,12 @@ D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ApiService.Tests\bin\Debug\net9.0\MyA
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ApiService.Tests\bin\Debug\net9.0\MyApp.Domain.pdb
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ApiService.Tests\bin\Debug\net9.0\MyApp.Persistence.pdb
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ApiService.Tests\bin\Debug\net9.0\MyApp.ServiceDefaults.pdb
+D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ApiService.Tests\obj\Debug\net9.0\MyApp.ApiService.Tests.csproj.AssemblyReference.cache
+D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ApiService.Tests\obj\Debug\net9.0\MyApp.ApiService.Tests.GeneratedMSBuildEditorConfig.editorconfig
+D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ApiService.Tests\obj\Debug\net9.0\MyApp.ApiService.Tests.AssemblyInfoInputs.cache
+D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ApiService.Tests\obj\Debug\net9.0\MyApp.ApiService.Tests.AssemblyInfo.cs
+D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ApiService.Tests\obj\Debug\net9.0\MyApp.ApiService.Tests.csproj.CoreCompileInputs.cache
+D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ApiService.Tests\obj\Debug\net9.0\MyApp.ApiService.Tests.sourcelink.json
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ApiService.Tests\obj\Debug\net9.0\MyApp.Ap.7F286095.Up2Date
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ApiService.Tests\obj\Debug\net9.0\MyApp.ApiService.Tests.dll
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ApiService.Tests\obj\Debug\net9.0\refint\MyApp.ApiService.Tests.dll

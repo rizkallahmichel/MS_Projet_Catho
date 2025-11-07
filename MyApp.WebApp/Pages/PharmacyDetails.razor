@@ -8,6 +8,8 @@
 @using System.Linq
 @using System.Security.Claims
 @using System.Text.Json
+@using MyApp.WebApp.Clients.Models.Requests
+@using MyApp.WebApp.Clients.Models.Shared
 
 <PageTitle>@(pharmacy?.Name ?? "Pharmacy")</PageTitle>
 
@@ -264,15 +266,20 @@ else if (pharmacy is not null)
                     </div>
                     <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-lg-between mt-4">
                         <div class="fs-5 mb-3 mb-lg-0">Total: <strong>@CartTotal.ToString("C")</strong></div>
-                        <button class="btn btn-primary"
-                                disabled="@(!CanPlaceOrder || isPlacingOrder)"
-                                @onclick="PlaceOrderAsync">
-                            @if (isPlacingOrder)
-                            {
-                                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                            }
-                            Place order
-                        </button>
+                        <div class="text-lg-end">
+                            <button class="btn btn-primary w-100"
+                                    disabled="@(!CanPlaceOrder || isPlacingOrder)"
+                                    @onclick="PlaceOrderAsync">
+                                @if (isPlacingOrder)
+                                {
+                                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                }
+                                Place order
+                            </button>
+                            <div class="text-muted small mt-2">
+                                Pay on delivery · Settle when you receive your order. The pharmacy will mark the payment as done afterward.
+                            </div>
+                        </div>
                     </div>
                 }
             </div>
@@ -650,7 +657,24 @@ else if (pharmacy is not null)
                                 <td>@payment.Id.ToString()[..8]...</td>
                                 <td>@GetOrderNumber(payment.OrderId)</td>
                                 <td>@payment.PaidAt.LocalDateTime.ToString("dd MMM yyyy HH:mm")</td>
-                                <td>@payment.Status</td>
+                                <td>
+                                    <div class="d-flex flex-wrap align-items-center gap-2">
+                                        <span>@payment.Status</span>
+                                        @if (canManagePayments && IsPendingPayment(payment.Status))
+                                        {
+                                            <button type="button"
+                                                    class="btn btn-sm btn-outline-success"
+                                                    disabled="@(updatingPaymentId == payment.Id)"
+                                                    @onclick="@(() => MarkPaymentAsDoneAsync(payment.Id))">
+                                                @if (updatingPaymentId == payment.Id)
+                                                {
+                                                    <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                                                }
+                                                Mark as done
+                                            </button>
+                                        }
+                                    </div>
+                                </td>
                                 <td>@payment.Method</td>
                                 <td class="text-end">@payment.Amount.ToString("C")</td>
                             </tr>
@@ -676,6 +700,7 @@ else if (pharmacy is not null)
     private bool isLoadingPayments;
     private bool canManagePharmacy;
     private bool canManageCatalog;
+    private bool canManagePayments;
     private bool isClient;
     private Guid? selectedCategoryId;
     private readonly List<CartLineModel> cartLines = [];
@@ -693,6 +718,7 @@ else if (pharmacy is not null)
     private Guid? categoryDeleteCandidate;
     private Guid? productDeleteCandidate;
     private Guid? selectedOrderIdForPayments;
+    private Guid? updatingPaymentId;
 
     private bool isSavingPharmacy;
     private bool isSavingCategory;
@@ -716,6 +742,7 @@ else if (pharmacy is not null)
         var hasPharmacyRole = HasRole(user, "pharmacy");
         canManagePharmacy = hasAdminRole;
         canManageCatalog = hasAdminRole || hasPharmacyRole;
+        canManagePayments = hasAdminRole || hasPharmacyRole;
         isClient = !hasAdminRole && !hasPharmacyRole && HasRole(user, "client");
     }
 
@@ -743,7 +770,7 @@ else if (pharmacy is not null)
               {
                   await LoadOrdersAsync();
               }
-              if (canManagePharmacy)
+              if (canManagePayments)
               {
                   await LoadPaymentsAsync();
               }
@@ -960,13 +987,46 @@ else if (pharmacy is not null)
 
             var result = await CmsApiClient.CreateOrderAsync(PharmacyId, request);
 
-            SetAlert($"Order {result.OrderNumber} placed successfully.", "success");
+            PaymentModel? paymentRecord = null;
+            string? paymentError = null;
+            try
+            {
+                paymentRecord = await CmsApiClient.EnsurePayOnDeliveryPaymentAsync(
+                    PharmacyId,
+                    new CreatePaymentRequest(result.OrderId));
+            }
+            catch (Exception paymentEx)
+            {
+                paymentError = paymentEx.Message;
+            }
+
+            if (!string.IsNullOrWhiteSpace(paymentError))
+            {
+                SetAlert(
+                    $"Order {result.OrderNumber} placed, but we couldn't create the payment record: {paymentError}",
+                    "warning");
+            }
+            else if (paymentRecord is not null)
+            {
+                var paymentReference = paymentRecord.Id.ToString()[..8].ToUpperInvariant();
+                SetAlert(
+                    $"Order {result.OrderNumber} placed successfully. Payment reference {paymentReference} recorded as pay on delivery.",
+                    "success");
+            }
+            else
+            {
+                SetAlert($"Order {result.OrderNumber} placed successfully. Pay on delivery when your order arrives.", "success");
+            }
             cartLines.Clear();
 
             await LoadProductsAsync();
             if (!isClient)
             {
                 await LoadOrdersAsync();
+            }
+            if (canManagePayments)
+            {
+                await LoadPaymentsAsync();
             }
         }
         catch (Exception ex)
@@ -999,6 +1059,50 @@ else if (pharmacy is not null)
         finally
         {
             isLoadingPayments = false;
+        }
+    }
+
+    private static bool IsPendingPayment(string? status) =>
+        string.IsNullOrWhiteSpace(status) ||
+        status.Equals("pending", StringComparison.OrdinalIgnoreCase);
+
+    private async Task MarkPaymentAsDoneAsync(Guid paymentId)
+    {
+        if (!canManagePayments)
+        {
+            return;
+        }
+
+        const string targetStatus = "Done";
+        updatingPaymentId = paymentId;
+        try
+        {
+            await CmsApiClient.UpdatePaymentStatusAsync(
+                PharmacyId,
+                paymentId,
+                new UpdatePaymentStatusRequest(targetStatus));
+
+            var index = payments.FindIndex(payment => payment.Id == paymentId);
+            if (index >= 0)
+            {
+                payments[index] = payments[index] with { Status = targetStatus };
+
+                var orderIndex = orders.FindIndex(order => order.Id == payments[index].OrderId);
+                if (orderIndex >= 0)
+                {
+                    orders[orderIndex] = orders[orderIndex] with { Status = targetStatus };
+                }
+            }
+
+            SetAlert("Payment marked as done.", "success");
+        }
+        catch (Exception ex)
+        {
+            SetAlert($"Failed to update payment: {ex.Message}", "danger");
+        }
+        finally
+        {
+            updatingPaymentId = null;
         }
     }
 

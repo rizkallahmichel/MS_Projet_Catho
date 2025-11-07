@@ -3,6 +3,7 @@ using MyApp.Application.Orders.Commands.CreateOrder;
 using MyApp.Domain.Abstractions;
 using MyApp.Domain.Orders;
 using MyApp.Domain.Pharmacies;
+using MyApp.Domain.Payments;
 using MyApp.Domain.Products;
 
 namespace MyApp.Application.Tests.Orders;
@@ -12,6 +13,7 @@ public class CreateOrderCommandHandlerTests
     private readonly Mock<IPharmacyRepository> _pharmacyRepositoryMock = new();
     private readonly Mock<IProductRepository> _productRepositoryMock = new();
     private readonly Mock<IOrderRepository> _orderRepositoryMock = new();
+    private readonly Mock<IPaymentRepository> _paymentRepositoryMock = new();
     private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
 
     [Fact]
@@ -44,6 +46,7 @@ public class CreateOrderCommandHandlerTests
             _pharmacyRepositoryMock.Object,
             _productRepositoryMock.Object,
             _orderRepositoryMock.Object,
+            _paymentRepositoryMock.Object,
             _unitOfWorkMock.Object);
 
         var command = new CreateOrderCommand(
@@ -86,6 +89,7 @@ public class CreateOrderCommandHandlerTests
             _pharmacyRepositoryMock.Object,
             _productRepositoryMock.Object,
             _orderRepositoryMock.Object,
+            _paymentRepositoryMock.Object,
             _unitOfWorkMock.Object);
 
         var command = new CreateOrderCommand(

@@ -6,6 +6,8 @@ on:
       - main
       - ci-workflow
   pull_request:
+    branches:
+      - main
 
 jobs:
   build-and-test:

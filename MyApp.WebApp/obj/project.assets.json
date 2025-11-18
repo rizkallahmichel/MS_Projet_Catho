@@ -4073,42 +4073,35 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Dell\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\lenovo\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.WebApp\\MyApp.WebApp.csproj",
+      "projectUniqueName": "D:\\La_catho\\Master_2_Cyber_Cours\\S1\\Technologie Microsoft\\MS_Projet_Catho\\MyApp.WebApp\\MyApp.WebApp.csproj",
       "projectName": "MyApp.WebApp",
-      "projectPath": "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.WebApp\\MyApp.WebApp.csproj",
-      "packagesPath": "C:\\Users\\Dell\\.nuget\\packages\\",
-      "outputPath": "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.WebApp\\obj\\",
+      "projectPath": "D:\\La_catho\\Master_2_Cyber_Cours\\S1\\Technologie Microsoft\\MS_Projet_Catho\\MyApp.WebApp\\MyApp.WebApp.csproj",
+      "packagesPath": "C:\\Users\\lenovo\\.nuget\\packages\\",
+      "outputPath": "D:\\La_catho\\Master_2_Cyber_Cours\\S1\\Technologie Microsoft\\MS_Projet_Catho\\MyApp.WebApp\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\Dell\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\lenovo\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
-            "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.Persistence\\MyApp.Persistence.csproj": {
-              "projectPath": "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.Persistence\\MyApp.Persistence.csproj"
+            "D:\\La_catho\\Master_2_Cyber_Cours\\S1\\Technologie Microsoft\\MS_Projet_Catho\\MyApp.Persistence\\MyApp.Persistence.csproj": {
+              "projectPath": "D:\\La_catho\\Master_2_Cyber_Cours\\S1\\Technologie Microsoft\\MS_Projet_Catho\\MyApp.Persistence\\MyApp.Persistence.csproj"
             },
-            "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.ServiceDefaults\\MyApp.ServiceDefaults.csproj": {
-              "projectPath": "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.ServiceDefaults\\MyApp.ServiceDefaults.csproj"
+            "D:\\La_catho\\Master_2_Cyber_Cours\\S1\\Technologie Microsoft\\MS_Projet_Catho\\MyApp.ServiceDefaults\\MyApp.ServiceDefaults.csproj": {
+              "projectPath": "D:\\La_catho\\Master_2_Cyber_Cours\\S1\\Technologie Microsoft\\MS_Projet_Catho\\MyApp.ServiceDefaults\\MyApp.ServiceDefaults.csproj"
             }
           }
         }
@@ -4153,16 +4146,8 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.307/PortableRuntimeIdentifierGraph.json"
       }
     }
-  },
-  "logs": [
-    {
-      "code": "NU1900",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Error occurred while getting package vulnerability data: Unable to load the service index for source https://api.nuget.org/v3/index.json."
-    }
-  ]
+  }
 }

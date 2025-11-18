@@ -14,3 +14,19 @@ D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.Application\obj\Debug\net9.0\MyApp.Ap
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.Application\obj\Debug\net9.0\refint\MyApp.Application.dll
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.Application\obj\Debug\net9.0\MyApp.Application.pdb
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.Application\obj\Debug\net9.0\ref\MyApp.Application.dll
+D:\La_catho\Master_2_Cyber_Cours\S1\Technologie Microsoft\MS_Projet_Catho\MyApp.Application\bin\Debug\net9.0\MyApp.Application.deps.json
+D:\La_catho\Master_2_Cyber_Cours\S1\Technologie Microsoft\MS_Projet_Catho\MyApp.Application\bin\Debug\net9.0\MyApp.Application.dll
+D:\La_catho\Master_2_Cyber_Cours\S1\Technologie Microsoft\MS_Projet_Catho\MyApp.Application\bin\Debug\net9.0\MyApp.Application.pdb
+D:\La_catho\Master_2_Cyber_Cours\S1\Technologie Microsoft\MS_Projet_Catho\MyApp.Application\bin\Debug\net9.0\MyApp.Domain.dll
+D:\La_catho\Master_2_Cyber_Cours\S1\Technologie Microsoft\MS_Projet_Catho\MyApp.Application\bin\Debug\net9.0\MyApp.Domain.pdb
+D:\La_catho\Master_2_Cyber_Cours\S1\Technologie Microsoft\MS_Projet_Catho\MyApp.Application\obj\Debug\net9.0\MyApp.Application.csproj.AssemblyReference.cache
+D:\La_catho\Master_2_Cyber_Cours\S1\Technologie Microsoft\MS_Projet_Catho\MyApp.Application\obj\Debug\net9.0\MyApp.Application.GeneratedMSBuildEditorConfig.editorconfig
+D:\La_catho\Master_2_Cyber_Cours\S1\Technologie Microsoft\MS_Projet_Catho\MyApp.Application\obj\Debug\net9.0\MyApp.Application.AssemblyInfoInputs.cache
+D:\La_catho\Master_2_Cyber_Cours\S1\Technologie Microsoft\MS_Projet_Catho\MyApp.Application\obj\Debug\net9.0\MyApp.Application.AssemblyInfo.cs
+D:\La_catho\Master_2_Cyber_Cours\S1\Technologie Microsoft\MS_Projet_Catho\MyApp.Application\obj\Debug\net9.0\MyApp.Application.csproj.CoreCompileInputs.cache
+D:\La_catho\Master_2_Cyber_Cours\S1\Technologie Microsoft\MS_Projet_Catho\MyApp.Application\obj\Debug\net9.0\MyApp.Application.sourcelink.json
+D:\La_catho\Master_2_Cyber_Cours\S1\Technologie Microsoft\MS_Projet_Catho\MyApp.Application\obj\Debug\net9.0\MyApp.Ap.B540CA8A.Up2Date
+D:\La_catho\Master_2_Cyber_Cours\S1\Technologie Microsoft\MS_Projet_Catho\MyApp.Application\obj\Debug\net9.0\MyApp.Application.dll
+D:\La_catho\Master_2_Cyber_Cours\S1\Technologie Microsoft\MS_Projet_Catho\MyApp.Application\obj\Debug\net9.0\refint\MyApp.Application.dll
+D:\La_catho\Master_2_Cyber_Cours\S1\Technologie Microsoft\MS_Projet_Catho\MyApp.Application\obj\Debug\net9.0\MyApp.Application.pdb
+D:\La_catho\Master_2_Cyber_Cours\S1\Technologie Microsoft\MS_Projet_Catho\MyApp.Application\obj\Debug\net9.0\ref\MyApp.Application.dll

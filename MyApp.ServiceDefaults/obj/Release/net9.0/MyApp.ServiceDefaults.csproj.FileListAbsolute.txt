@@ -1,0 +1,13 @@
+D:\La_catho\Master_2_Cyber_Cours\S1\Technologie Microsoft\MS_Projet_Catho\MyApp.ServiceDefaults\bin\Release\net9.0\MyApp.ServiceDefaults.deps.json
+D:\La_catho\Master_2_Cyber_Cours\S1\Technologie Microsoft\MS_Projet_Catho\MyApp.ServiceDefaults\bin\Release\net9.0\MyApp.ServiceDefaults.dll
+D:\La_catho\Master_2_Cyber_Cours\S1\Technologie Microsoft\MS_Projet_Catho\MyApp.ServiceDefaults\bin\Release\net9.0\MyApp.ServiceDefaults.pdb
+D:\La_catho\Master_2_Cyber_Cours\S1\Technologie Microsoft\MS_Projet_Catho\MyApp.ServiceDefaults\obj\Release\net9.0\MyApp.ServiceDefaults.csproj.AssemblyReference.cache
+D:\La_catho\Master_2_Cyber_Cours\S1\Technologie Microsoft\MS_Projet_Catho\MyApp.ServiceDefaults\obj\Release\net9.0\MyApp.ServiceDefaults.GeneratedMSBuildEditorConfig.editorconfig
+D:\La_catho\Master_2_Cyber_Cours\S1\Technologie Microsoft\MS_Projet_Catho\MyApp.ServiceDefaults\obj\Release\net9.0\MyApp.ServiceDefaults.AssemblyInfoInputs.cache
+D:\La_catho\Master_2_Cyber_Cours\S1\Technologie Microsoft\MS_Projet_Catho\MyApp.ServiceDefaults\obj\Release\net9.0\MyApp.ServiceDefaults.AssemblyInfo.cs
+D:\La_catho\Master_2_Cyber_Cours\S1\Technologie Microsoft\MS_Projet_Catho\MyApp.ServiceDefaults\obj\Release\net9.0\MyApp.ServiceDefaults.csproj.CoreCompileInputs.cache
+D:\La_catho\Master_2_Cyber_Cours\S1\Technologie Microsoft\MS_Projet_Catho\MyApp.ServiceDefaults\obj\Release\net9.0\MyApp.ServiceDefaults.sourcelink.json
+D:\La_catho\Master_2_Cyber_Cours\S1\Technologie Microsoft\MS_Projet_Catho\MyApp.ServiceDefaults\obj\Release\net9.0\MyApp.ServiceDefaults.dll
+D:\La_catho\Master_2_Cyber_Cours\S1\Technologie Microsoft\MS_Projet_Catho\MyApp.ServiceDefaults\obj\Release\net9.0\refint\MyApp.ServiceDefaults.dll
+D:\La_catho\Master_2_Cyber_Cours\S1\Technologie Microsoft\MS_Projet_Catho\MyApp.ServiceDefaults\obj\Release\net9.0\MyApp.ServiceDefaults.pdb
+D:\La_catho\Master_2_Cyber_Cours\S1\Technologie Microsoft\MS_Projet_Catho\MyApp.ServiceDefaults\obj\Release\net9.0\ref\MyApp.ServiceDefaults.dll

@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - cicd
+      - ci-workflow
   pull_request:
 
 jobs:

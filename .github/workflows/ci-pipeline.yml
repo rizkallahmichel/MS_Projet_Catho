@@ -34,10 +34,3 @@ jobs:
         with:
           name: test-results
           path: '**/TestResults/**'
-
-      - name: Output coverage
-        run: |
-          reportgenerator \
-            -reports:**/coverage.cobertura.xml \
-            -targetdir:coveragereport \
-            -reporttypes:Html

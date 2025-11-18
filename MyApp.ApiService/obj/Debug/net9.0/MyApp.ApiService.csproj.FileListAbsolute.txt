@@ -212,7 +212,6 @@ D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ApiService\obj\Debug\net9.0\staticweb
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ApiService\obj\Debug\net9.0\staticwebassets.build.json.cache
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ApiService\obj\Debug\net9.0\staticwebassets.development.json
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ApiService\obj\Debug\net9.0\staticwebassets.build.endpoints.json
-D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ApiService\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ApiService\obj\Debug\net9.0\MyApp.Ap.4CD6A0D4.Up2Date
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ApiService\obj\Debug\net9.0\MyApp.ApiService.dll
 D:\CATHO\courses\MS\Projet_fix\MyApp\MyApp.ApiService\obj\Debug\net9.0\refint\MyApp.ApiService.dll

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MyApp.ApiService.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0993b501ac0fedaa234b529549dfeddbd924325d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5e92d7d784f9716e4918c3d310022b61981fce84")]
 [assembly: System.Reflection.AssemblyProductAttribute("MyApp.ApiService.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MyApp.ApiService.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

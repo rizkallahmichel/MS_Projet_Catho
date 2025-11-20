@@ -38,7 +38,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 186,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Bookmark",
@@ -57,21 +57,21 @@
               "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
             },
             {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c64b9c2-e352-428e-a56d-0ace190b99a6}"
+            },
+            {
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "PharmacyDetails.razor",
               "DocumentMoniker": "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.WebApp\\Pages\\PharmacyDetails.razor",
               "RelativeDocumentMoniker": "MyApp.WebApp\\Pages\\PharmacyDetails.razor",
-              "ToolTip": "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.WebApp\\Pages\\PharmacyDetails.razor*",
-              "RelativeToolTip": "MyApp.WebApp\\Pages\\PharmacyDetails.razor*",
-              "ViewState": "AgIAAM0DAAAAAAAAAAAYwOMDAAA0AAAAAAAAAA==",
+              "ToolTip": "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.WebApp\\Pages\\PharmacyDetails.razor",
+              "RelativeToolTip": "MyApp.WebApp\\Pages\\PharmacyDetails.razor",
+              "ViewState": "AgIAANEDAAAAAAAAAAAqwOMDAAA0AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-11-07T19:58:44.22Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{1c64b9c2-e352-428e-a56d-0ace190b99a6}"
             },
             {
               "$type": "Document",
@@ -83,8 +83,7 @@
               "RelativeToolTip": "MyApp.Application.Tests\\Orders\\CreateOrderCommandHandlerTests.cs",
               "ViewState": "AgIAABEAAAAAAAAAAAAswCwAAAAaAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-07T15:53:12.978Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-07T15:53:12.978Z"
             },
             {
               "$type": "Document",

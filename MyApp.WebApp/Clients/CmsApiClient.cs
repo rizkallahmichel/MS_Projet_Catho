@@ -29,6 +29,24 @@ public class CmsApiClient : ICmsApiClient
         return result ?? Array.Empty<PharmacySummary>();
     }
 
+    public async Task<IReadOnlyList<PharmacyProductMatch>> SearchPharmaciesByProductAsync(
+        string productName,
+        CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(productName))
+        {
+            return Array.Empty<PharmacyProductMatch>();
+        }
+
+        var encoded = Uri.EscapeDataString(productName);
+        var result = await _httpClient.GetFromJsonAsync<IReadOnlyList<PharmacyProductMatch>>(
+            $"api/pharmacies/search-by-product?productName={encoded}",
+            SerializerOptions,
+            cancellationToken);
+
+        return result ?? Array.Empty<PharmacyProductMatch>();
+    }
+
     public async Task<PharmacyDetailsModel?> GetPharmacyAsync(Guid pharmacyId, CancellationToken cancellationToken = default)
     {
         var response = await _httpClient.GetAsync($"api/pharmacies/{pharmacyId}", cancellationToken);

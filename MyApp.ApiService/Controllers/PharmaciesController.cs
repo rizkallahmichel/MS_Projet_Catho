@@ -9,6 +9,7 @@ using MyApp.Application.Pharmacies.Commands.UpdatePharmacy;
 using MyApp.Application.Pharmacies.Queries.GetPharmacies;
 using MyApp.Application.Pharmacies.Queries.GetPharmacyById;
 using MyApp.Application.Pharmacies.Queries.GetPharmacyByManagerUserId;
+using MyApp.Application.Pharmacies.Queries.SearchPharmaciesByProduct;
 
 namespace MyApp.ApiService.Controllers;
 
@@ -28,6 +29,18 @@ public class PharmaciesController : ControllerBase
     public async Task<ActionResult<IReadOnlyList<PharmacySummaryDto>>> GetPharmacies(CancellationToken cancellationToken)
     {
         var response = await _mediator.Send(new GetPharmaciesQuery(), cancellationToken);
+        return Ok(response);
+    }
+
+    [HttpGet("search-by-product")]
+    public async Task<ActionResult<IReadOnlyList<PharmacyProductMatchDto>>> SearchPharmaciesByProduct(
+        [FromQuery(Name = "productName")] string? productName,
+        CancellationToken cancellationToken)
+    {
+        var response = await _mediator.Send(
+            new SearchPharmaciesByProductQuery(productName ?? string.Empty),
+            cancellationToken);
+
         return Ok(response);
     }
 

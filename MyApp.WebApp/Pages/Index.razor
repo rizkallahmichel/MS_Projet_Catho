@@ -1,9 +1,794 @@
-﻿@page "/"
+@page "/"
+@attribute [Authorize]
+@inject ICmsApiClient CmsApiClient
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthStateProvider
+@using System.Collections.Generic
+@using System.Security.Claims
+@using System.Text.Json
+@using MyApp.WebApp.Components
 
-<PageTitle>Index</PageTitle>
+<PageTitle>@(isPharmacyUser ? "My Pharmacy" : isClient ? "Browse Pharmacies" : "Pharmacies")</PageTitle>
 
-<h1>Hello, world!</h1>
+@if (isPharmacyUser)
+{
+    <div class="d-flex flex-column flex-md-row align-items-md-center mb-4 gap-3">
+        <div>
+            <h1 class="mb-0">My Pharmacy</h1>
+            <p class="text-muted mb-0">
+                Review your catalog, categories, and payment history. Access to other pharmacies is disabled for this role.
+            </p>
+        </div>
+        @if (assignedPharmacyId.HasValue)
+        {
+            <div class="ms-md-auto">
+                <button class="btn btn-outline-primary" @onclick="NavigateToManagedPharmacyDetails">
+                    <span class="oi oi-wrench me-1" aria-hidden="true"></span>
+                    Manage store
+                </button>
+            </div>
+        }
+    </div>
 
-Welcome to your new app.
+    @if (isResolvingPharmacy)
+    {
+        <div class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Resolving your pharmacy...</span>
+            </div>
+        </div>
+    }
+    else if (assignedPharmacyId is null)
+    {
+        <div class="alert alert-warning" role="alert">
+            <strong>Your account is not linked to a pharmacy yet.</strong>
+            <div class="small text-muted mt-2">
+                Ask an administrator to associate your user with a pharmacy to unlock the dashboard.
+            </div>
+            @if (!string.IsNullOrEmpty(pharmacyResolutionError))
+            {
+                <div class="small text-danger mt-2">@pharmacyResolutionError</div>
+            }
+        </div>
+    }
+    else
+    {
+        <PharmacyDashboard PharmacyId="assignedPharmacyId.Value" PrefetchedPharmacy="managedPharmacyDetails" />
+    }
+}
+else
+{
+    <div class="d-flex flex-column flex-md-row align-items-md-center mb-4 gap-3">
+        <div>
+            <h1 class="mb-0">@(isClient ? "Browse Pharmacies" : "Pharmacies")</h1>
+            <p class="text-muted mb-0">
+                @(isClient
+                    ? "Choose a pharmacy to see its products and place an order."
+                    : "Manage the pharmacies in your tenant CMS.")
+            </p>
+        </div>
+        @if (isAdmin)
+        {
+            <div class="ms-md-auto">
+                <button class="btn btn-primary" @onclick="ShowCreateForm">
+                    <span class="oi oi-plus me-1" aria-hidden="true"></span>
+                    New Pharmacy
+                </button>
+            </div>
+        }
+    </div>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+
+    @if (isClient)
+    {
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body">
+                <div class="d-flex flex-column flex-lg-row gap-3 align-items-lg-end">
+                    <div class="flex-fill">
+                        <label class="form-label fw-semibold">Find a product</label>
+                        <input class="form-control"
+                               placeholder="e.g., ibuprofen, cough syrup, bandages"
+                               @bind="productSearchTerm"
+                               @bind:event="oninput" />
+                        <div class="form-text">We'll highlight pharmacies that currently stock this item.</div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="button"
+                                class="btn btn-primary"
+                                disabled="@IsProductSearchDisabled"
+                                @onclick="SearchProductsAsync">
+                            @if (isSearchingProducts)
+                            {
+                                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            }
+                            Search
+                        </button>
+                        <button type="button"
+                                class="btn btn-outline-secondary"
+                                disabled="@IsProductSearchResetDisabled"
+                                @onclick="ResetProductSearch">
+                            Clear
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+
+    @if (!string.IsNullOrEmpty(alertMessage))
+    {
+        <div class="alert alert-@alertStyle alert-dismissible fade show" role="alert">
+            @alertMessage
+            <button type="button" class="btn-close" aria-label="Close" @onclick="() => alertMessage = null"></button>
+        </div>
+    }
+
+    @if (ShouldShowProductSearchResults)
+    {
+        <section class="mb-4">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div>
+                    <h2 class="h5 mb-1">Search results</h2>
+                    @if (!string.IsNullOrWhiteSpace(lastSearchedProductTerm))
+                    {
+                        <div class="text-muted small">Showing pharmacies carrying <strong>@lastSearchedProductTerm</strong>.</div>
+                    }
+                </div>
+                <button class="btn btn-link btn-sm text-decoration-none" type="button" @onclick="ResetProductSearch" disabled="@isSearchingProducts">
+                    Clear search
+                </button>
+            </div>
+
+            @if (isSearchingProducts)
+            {
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Searching pharmacies...</span>
+                    </div>
+                </div>
+            }
+            else if (!string.IsNullOrEmpty(productSearchError))
+            {
+                <div class="alert alert-danger" role="alert">
+                    <strong>We couldn't complete the search.</strong>
+                    <div class="small text-break">@productSearchError</div>
+                    <button class="btn btn-outline-danger btn-sm mt-2" type="button" @onclick="SearchProductsAsync">Try again</button>
+                </div>
+            }
+            else if (productMatches.Count == 0)
+            {
+                <div class="alert alert-info" role="alert">
+                    <strong>No pharmacies carry this product yet.</strong>
+                    <div class="small text-muted mt-2">
+                        Try another medicine name or clear the search to browse every pharmacy.
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="row g-4">
+                    @foreach (var match in productMatches)
+                    {
+                        <div class="col-12 col-lg-6">
+                            <div class="card shadow-sm h-100 border-0 border-top border-4 border-top-@GetStatusColor(match.IsActive)">
+                                <div class="card-body d-flex flex-column">
+                                    <div class="d-flex justify-content-between align-items-start gap-3">
+                                        <div>
+                                            <h5 class="mb-1">@match.PharmacyName</h5>
+                                            <p class="small text-muted mb-2">
+                                                @(!string.IsNullOrWhiteSpace(match.Address)
+                                                    ? match.Address
+                                                    : "No address provided.")
+                                            </p>
+                                            <span class="badge bg-@GetStatusColor(match.IsActive)">
+                                                @(match.IsActive ? "Active" : "Inactive")
+                                            </span>
+                                        </div>
+                                        <button class="btn btn-outline-secondary btn-sm" title="Open pharmacy" @onclick="@(() => NavigateToPharmacy(match.PharmacyId))">
+                                            <span class="oi oi-external-link" aria-hidden="true"></span>
+                                        </button>
+                                    </div>
+
+                                    <div class="mt-3">
+                                        <div class="small text-uppercase text-muted mb-2">Matching products (@match.Products.Count)</div>
+                                        <ul class="list-group list-group-flush border rounded">
+                                            @foreach (var product in match.Products)
+                                            {
+                                                <li class="list-group-item">
+                                                    <div class="d-flex justify-content-between align-items-start gap-3">
+                                                        <div class="flex-fill">
+                                                            <div class="fw-semibold">@product.Name</div>
+                                                            @if (!string.IsNullOrWhiteSpace(product.Description))
+                                                            {
+                                                                <div class="small text-muted text-truncate">@product.Description</div>
+                                                            }
+                                                        </div>
+                                                        <div class="text-end">
+                                                            <div class="fw-semibold">@product.Price.ToString("C")</div>
+                                                            <div class="small text-muted">Stock: @product.StockQuantity</div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </div>
+
+                                    <div class="mt-3">
+                                        <button class="btn btn-primary btn-sm" @onclick="@(() => NavigateToPharmacy(match.PharmacyId))">
+                                            <span class="oi oi-cart me-1" aria-hidden="true"></span>
+                                            Shop this pharmacy
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </section>
+    }
+    else if (isLoading)
+    {
+        <div class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading pharmacy data...</span>
+            </div>
+        </div>
+    }
+    else if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <div class="alert alert-danger" role="alert">
+            <strong>Unable to load pharmacies.</strong>
+            <div class="small text-break">@errorMessage</div>
+            <button class="btn btn-outline-danger btn-sm mt-2" @onclick="ReloadAsync">Try again</button>
+        </div>
+    }
+    else if (pharmacies.Count == 0)
+    {
+        <div class="alert alert-info">
+            @if (isClient)
+            {
+                <span>There are no pharmacies available to order from right now.</span>
+            }
+            else
+            {
+                <span>There are no pharmacies yet.</span>
+            }
+            @if (isAdmin)
+            {
+                <span> Use the <strong>New Pharmacy</strong> button to add one.</span>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var pharmacy in pharmacies)
+            {
+                <div class="col-12 col-md-6 col-xl-4">
+                    <div class="card shadow-sm h-100 border-0 border-top border-4 border-top-@GetStatusColor(pharmacy.IsActive)">
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <h5 class="card-title mb-0">@pharmacy.Name</h5>
+                                    <span class="badge bg-@GetStatusColor(pharmacy.IsActive) mt-2">
+                                        @(pharmacy.IsActive ? "Active" : "Inactive")
+                                    </span>
+                                </div>
+                                <button class="btn btn-outline-secondary btn-sm" title="Manage pharmacy" @onclick="@(() => NavigateToPharmacy(pharmacy.Id))">
+                                    <span class="oi oi-external-link" aria-hidden="true"></span>
+                                </button>
+                            </div>
+
+                            <p class="text-muted small mb-4">Categories: <strong>@pharmacy.CategoriesCount</strong> &middot; Products: <strong>@pharmacy.ProductsCount</strong></p>
+
+                            <div class="mt-auto">
+                                <button class="btn @(isClient ? "btn-primary" : "btn-outline-primary") btn-sm me-2" @onclick="@(() => NavigateToPharmacy(pharmacy.Id))">
+                                    <span class="oi @(isClient ? "oi-cart" : "oi-wrench") me-1" aria-hidden="true"></span>
+                                    @(isClient ? "Shop" : "Manage")
+                                </button>
+                                @if (isAdmin)
+                                {
+                                    <button class="btn btn-outline-danger btn-sm" @onclick="@(() => ToggleDeleteConfirmation(pharmacy.Id))">
+                                        <span class="oi oi-trash me-1" aria-hidden="true"></span>
+                                        Delete
+                                    </button>
+                                }
+
+                                @if (isAdmin && confirmDeleteId == pharmacy.Id)
+                                {
+                                    <div class="alert alert-warning mt-3 mb-0">
+                                        <div class="fw-semibold">Delete <span class="text-danger">@pharmacy.Name</span>?</div>
+                                        <p class="small mb-3">This removes the pharmacy and all of its data.</p>
+                                        <div class="d-flex gap-2">
+                                            <button class="btn btn-danger btn-sm" disabled="@isMutating" @onclick="@(() => ConfirmDeleteAsync(pharmacy.Id))">
+                                            @if (isMutating)
+                                            {
+                                                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                            }
+                                            Delete
+                                        </button>
+                                        <button class="btn btn-outline-secondary btn-sm" @onclick="CancelDelete">Cancel</button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@if (isAdmin && showCreateForm)
+{
+    <div class="card shadow-sm border-0 mt-5">
+        <div class="card-header bg-light">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="h5 mb-0">Create Pharmacy</h2>
+                <button class="btn btn-sm btn-outline-secondary" @onclick="HideCreateForm">Cancel</button>
+            </div>
+        </div>
+        <div class="card-body">
+            <EditForm Model="@createModel" OnValidSubmit="HandleCreateAsync">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="mb-3">
+                    <label class="form-label">Name</label>
+                    <InputText class="form-control" @bind-Value="createModel.Name" />
+                    <ValidationMessage For="@(() => createModel.Name)" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <InputTextArea class="form-control" @bind-Value="createModel.Description" rows="3" />
+                    <ValidationMessage For="@(() => createModel.Description)" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Address</label>
+                    <InputTextArea class="form-control" @bind-Value="createModel.Address" rows="2" />
+                    <ValidationMessage For="@(() => createModel.Address)" />
+                </div>
+
+                <div class="border-top pt-3 mt-4">
+                    <h3 class="h6 text-uppercase text-muted mb-3">Manager Account</h3>
+
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label">Username</label>
+                            <InputText class="form-control" @bind-Value="createModel.ManagerUsername" />
+                            <ValidationMessage For="@(() => createModel.ManagerUsername)" />
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label">Email</label>
+                            <InputText class="form-control" @bind-Value="createModel.ManagerEmail" />
+                            <ValidationMessage For="@(() => createModel.ManagerEmail)" />
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mt-0">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label">Password</label>
+                            <InputText class="form-control" @bind-Value="createModel.ManagerPassword" type="password" />
+                            <ValidationMessage For="@(() => createModel.ManagerPassword)" />
+                        </div>
+                        <div class="col-12 col-md-3">
+                            <label class="form-label">First name (optional)</label>
+                            <InputText class="form-control" @bind-Value="createModel.ManagerFirstName" />
+                            <ValidationMessage For="@(() => createModel.ManagerFirstName)" />
+                        </div>
+                        <div class="col-12 col-md-3">
+                            <label class="form-label">Last name (optional)</label>
+                            <InputText class="form-control" @bind-Value="createModel.ManagerLastName" />
+                            <ValidationMessage For="@(() => createModel.ManagerLastName)" />
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" type="submit" disabled="@isMutating">
+                    @if (isMutating)
+                    {
+                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    }
+                    Create Pharmacy
+                </button>
+            </EditForm>
+        </div>
+    </div>
+}
+}
+
+@code {
+    private readonly List<PharmacySummary> pharmacies = [];
+    private bool isLoading = true;
+    private bool isAdmin;
+    private bool isClient;
+    private bool isPharmacyUser;
+    private Guid? assignedPharmacyId;
+    private bool isResolvingPharmacy;
+    private string? pharmacyResolutionError;
+    private PharmacyDetailsModel? managedPharmacyDetails;
+    private string? errorMessage;
+    private string? alertMessage;
+    private string alertStyle = "success";
+    private readonly List<PharmacyProductMatch> productMatches = [];
+    private string productSearchTerm = string.Empty;
+    private string? lastSearchedProductTerm;
+    private string? productSearchError;
+    private bool isSearchingProducts;
+    private bool hasExecutedProductSearch;
+    private bool showCreateForm;
+    private bool isMutating;
+    private Guid? confirmDeleteId;
+    private readonly CreatePharmacyFormModel createModel = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ResolveUserRoleAsync();
+
+        if (isPharmacyUser)
+        {
+            if (!assignedPharmacyId.HasValue)
+            {
+                await ResolveManagedPharmacyAsync();
+            }
+
+            return;
+        }
+
+        await LoadPharmaciesAsync();
+    }
+
+    private async Task ResolveUserRoleAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var hasAdminRole = HasRole(user, "admin");
+        var hasPharmacyRole = HasRole(user, "pharmacy");
+        isAdmin = hasAdminRole;
+        isPharmacyUser = !hasAdminRole && hasPharmacyRole;
+        isClient = !isAdmin && !isPharmacyUser && HasRole(user, "client");
+        assignedPharmacyId = isPharmacyUser ? ResolvePharmacyId(user) : null;
+    }
+
+    private bool IsProductSearchDisabled =>
+        isSearchingProducts || string.IsNullOrWhiteSpace(productSearchTerm);
+
+    private bool IsProductSearchResetDisabled =>
+        isSearchingProducts || (string.IsNullOrWhiteSpace(productSearchTerm) && !hasExecutedProductSearch);
+
+    private bool ShouldShowProductSearchResults =>
+        isClient && (hasExecutedProductSearch || isSearchingProducts);
+
+    private async Task LoadPharmaciesAsync()
+    {
+        if (isPharmacyUser)
+        {
+            return;
+        }
+
+        isLoading = true;
+        errorMessage = null;
+        try
+        {
+            pharmacies.Clear();
+            var result = await CmsApiClient.GetPharmaciesAsync();
+            pharmacies.AddRange(result.OrderByDescending(p => p.IsActive).ThenBy(p => p.Name));
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void ShowCreateForm()
+    {
+        showCreateForm = true;
+        alertMessage = null;
+    }
+
+    private void HideCreateForm()
+    {
+        showCreateForm = false;
+        createModel.Reset();
+    }
+
+    private async Task HandleCreateAsync()
+    {
+        isMutating = true;
+        alertMessage = null;
+        try
+        {
+            var request = new CreatePharmacyRequest(
+                createModel.Name,
+                createModel.Description,
+                createModel.Address,
+                createModel.ManagerUsername,
+                createModel.ManagerEmail,
+                createModel.ManagerPassword,
+                createModel.ManagerFirstName,
+                createModel.ManagerLastName);
+            await CmsApiClient.CreatePharmacyAsync(request);
+            SetAlert($"Pharmacy created successfully. Manager account '{createModel.ManagerUsername}' is ready to sign in.", "success");
+            HideCreateForm();
+            await LoadPharmaciesAsync();
+        }
+        catch (Exception ex)
+        {
+            SetAlert($"Failed to create pharmacy: {ex.Message}", "danger");
+        }
+        finally
+        {
+            isMutating = false;
+        }
+    }
+
+    private async Task ConfirmDeleteAsync(Guid pharmacyId)
+    {
+        isMutating = true;
+        alertMessage = null;
+        try
+        {
+            await CmsApiClient.DeletePharmacyAsync(pharmacyId);
+            SetAlert("Pharmacy deleted.", "info");
+            confirmDeleteId = null;
+            await LoadPharmaciesAsync();
+        }
+        catch (Exception ex)
+        {
+            SetAlert($"Failed to delete pharmacy: {ex.Message}", "danger");
+        }
+        finally
+        {
+            isMutating = false;
+        }
+    }
+
+    private void ToggleDeleteConfirmation(Guid pharmacyId)
+    {
+        alertMessage = null;
+        confirmDeleteId = confirmDeleteId == pharmacyId ? null : pharmacyId;
+    }
+
+    private void CancelDelete()
+    {
+        confirmDeleteId = null;
+    }
+
+    private void NavigateToPharmacy(Guid pharmacyId)
+    {
+        NavigationManager.NavigateTo($"/pharmacies/{pharmacyId}");
+    }
+
+    private async Task ReloadAsync()
+    {
+        await LoadPharmaciesAsync();
+    }
+
+    private void SetAlert(string message, string style)
+    {
+        alertMessage = message;
+        alertStyle = style;
+    }
+
+    private async Task SearchProductsAsync()
+    {
+        if (isSearchingProducts)
+        {
+            return;
+        }
+
+        productSearchError = null;
+        var searchTerm = productSearchTerm?.Trim() ?? string.Empty;
+
+        if (string.IsNullOrWhiteSpace(searchTerm))
+        {
+            ResetProductSearch();
+            return;
+        }
+
+        isSearchingProducts = true;
+        try
+        {
+            var matches = await CmsApiClient.SearchPharmaciesByProductAsync(searchTerm);
+            productMatches.Clear();
+            productMatches.AddRange(matches);
+            lastSearchedProductTerm = searchTerm;
+            hasExecutedProductSearch = true;
+        }
+        catch (Exception ex)
+        {
+            productMatches.Clear();
+            productSearchError = ex.Message;
+            lastSearchedProductTerm = searchTerm;
+            hasExecutedProductSearch = true;
+        }
+        finally
+        {
+            isSearchingProducts = false;
+        }
+    }
+
+    private void ResetProductSearch()
+    {
+        productSearchTerm = string.Empty;
+        productMatches.Clear();
+        productSearchError = null;
+        lastSearchedProductTerm = null;
+        hasExecutedProductSearch = false;
+    }
+
+    private void NavigateToManagedPharmacyDetails()
+    {
+        if (assignedPharmacyId.HasValue)
+        {
+            NavigationManager.NavigateTo($"/pharmacies/{assignedPharmacyId.Value}");
+        }
+    }
+
+    private async Task ResolveManagedPharmacyAsync()
+    {
+        isResolvingPharmacy = true;
+        pharmacyResolutionError = null;
+
+        try
+        {
+            managedPharmacyDetails = await CmsApiClient.GetManagedPharmacyAsync();
+            assignedPharmacyId = managedPharmacyDetails?.Id;
+        }
+        catch (Exception ex)
+        {
+            pharmacyResolutionError = ex.Message;
+        }
+        finally
+        {
+            isResolvingPharmacy = false;
+        }
+    }
+
+    private static string GetStatusColor(bool isActive) => isActive ? "success" : "secondary";
+
+    private static bool HasRole(ClaimsPrincipal? user, string role) =>
+        user is not null && ResolveRoles(user).Contains(role, StringComparer.OrdinalIgnoreCase);
+
+    private static Guid? ResolvePharmacyId(ClaimsPrincipal user)
+    {
+        var claim = user.Claims.FirstOrDefault(c =>
+            string.Equals(c.Type, "pharmacyId", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(c.Type, "pharmacy_id", StringComparison.OrdinalIgnoreCase));
+
+        return Guid.TryParse(claim?.Value, out var pharmacyId)
+            ? pharmacyId
+            : null;
+    }
+
+    private static HashSet<string> ResolveRoles(ClaimsPrincipal user)
+    {
+        var roles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var claim in user.Claims)
+        {
+            if (!string.IsNullOrWhiteSpace(claim.Value) &&
+                (string.Equals(claim.Type, ClaimTypes.Role, StringComparison.OrdinalIgnoreCase) ||
+                 string.Equals(claim.Type, "role", StringComparison.OrdinalIgnoreCase)))
+            {
+                roles.Add(claim.Value);
+            }
+        }
+
+        MergeRolesFromRealmAccess(user.Claims.FirstOrDefault(c => c.Type == "realm_access")?.Value, roles);
+        MergeRolesFromResourceAccess(user.Claims.FirstOrDefault(c => c.Type == "resource_access")?.Value, roles);
+
+        return roles;
+    }
+
+    private static void MergeRolesFromRealmAccess(string? json, HashSet<string> roles)
+    {
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            return;
+        }
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (doc.RootElement.TryGetProperty("roles", out var rolesArray))
+            {
+                foreach (var item in rolesArray.EnumerateArray())
+                {
+                    var value = item.GetString();
+                    if (!string.IsNullOrWhiteSpace(value))
+                    {
+                        roles.Add(value);
+                    }
+                }
+            }
+        }
+        catch
+        {
+            // Ignore parsing issues
+        }
+    }
+
+    private static void MergeRolesFromResourceAccess(string? json, HashSet<string> roles)
+    {
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            return;
+        }
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            foreach (var resource in doc.RootElement.EnumerateObject())
+            {
+                if (resource.Value.TryGetProperty("roles", out var rolesArray))
+                {
+                    foreach (var item in rolesArray.EnumerateArray())
+                    {
+                        var value = item.GetString();
+                        if (!string.IsNullOrWhiteSpace(value))
+                        {
+                            roles.Add(value);
+                        }
+                    }
+                }
+            }
+        }
+        catch
+        {
+            // Ignore parsing issues
+        }
+    }
+
+    private sealed class CreatePharmacyFormModel
+    {
+        [Required]
+        [StringLength(200)]
+        public string Name { get; set; } = string.Empty;
+
+        [StringLength(500)]
+        public string? Description { get; set; }
+
+        [StringLength(400)]
+        public string? Address { get; set; }
+
+        [Required]
+        [StringLength(100, MinimumLength = 3)]
+        public string ManagerUsername { get; set; } = string.Empty;
+
+        [Required]
+        [EmailAddress]
+        [StringLength(256)]
+        public string ManagerEmail { get; set; } = string.Empty;
+
+        [Required]
+        [StringLength(128, MinimumLength = 8)]
+        public string ManagerPassword { get; set; } = string.Empty;
+
+        [StringLength(100)]
+        public string? ManagerFirstName { get; set; }
+
+        [StringLength(100)]
+        public string? ManagerLastName { get; set; }
+
+        public void Reset()
+        {
+            Name = string.Empty;
+            Description = null;
+            Address = null;
+            ManagerUsername = string.Empty;
+            ManagerEmail = string.Empty;
+            ManagerPassword = string.Empty;
+            ManagerFirstName = null;
+            ManagerLastName = null;
+        }
+    }
+}

@@ -98,5 +98,15 @@
     "C:\\Users\\Dell\\.nuget\\packages\\system.text.json\\9.0.5\\system.text.json.9.0.5.nupkg.sha512",
     "C:\\Users\\Dell\\.nuget\\packages\\yamldotnet\\16.3.0\\yamldotnet.16.3.0.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "Undefined",
+      "level": "Warning",
+      "message": "Problem reading the cache file D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.AppHost\\obj\\project.nuget.cache : '<' is an invalid start of a property name. Expected a '\"'. Path: $ | LineNumber: 2 | BytePositionInLine: 0.",
+      "projectPath": "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.AppHost\\MyApp.AppHost.csproj",
+      "warningLevel": 1,
+      "filePath": "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.AppHost\\MyApp.AppHost.csproj",
+      "targetGraphs": []
+    }
+  ]
 }

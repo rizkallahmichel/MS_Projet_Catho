@@ -3,24 +3,32 @@
   "WorkspaceRootPath": "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{1CA94D23-2CD7-4976-83A2-7B3A43D9D35C}|MyApp.ApiService\\MyApp.ApiService.csproj|d:\\catho\\courses\\ms\\projet_fix\\myapp\\myapp.apiservice\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{1CA94D23-2CD7-4976-83A2-7B3A43D9D35C}|MyApp.ApiService\\MyApp.ApiService.csproj|solutionrelative:myapp.apiservice\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+      "AbsoluteMoniker": "D:0:0:{87D7C66A-7AE7-452A-B114-D09DDDBE6660}|MyApp.WebApp\\MyApp.WebApp.csproj|d:\\catho\\courses\\ms\\projet_fix\\myapp\\myapp.webapp\\pages\\pharmacydetails.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{87D7C66A-7AE7-452A-B114-D09DDDBE6660}|MyApp.WebApp\\MyApp.WebApp.csproj|solutionrelative:myapp.webapp\\pages\\pharmacydetails.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{87D7C66A-7AE7-452A-B114-D09DDDBE6660}|MyApp.WebApp\\MyApp.WebApp.csproj|d:\\catho\\courses\\ms\\projet_fix\\myapp\\myapp.webapp\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{87D7C66A-7AE7-452A-B114-D09DDDBE6660}|MyApp.WebApp\\MyApp.WebApp.csproj|solutionrelative:myapp.webapp\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+      "AbsoluteMoniker": "D:0:0:{4FABFBE6-81E3-4C3F-8402-72BDEF849E86}|MyApp.Application.Tests\\MyApp.Application.Tests.csproj|d:\\catho\\courses\\ms\\projet_fix\\myapp\\myapp.application.tests\\orders\\createordercommandhandlertests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4FABFBE6-81E3-4C3F-8402-72BDEF849E86}|MyApp.Application.Tests\\MyApp.Application.Tests.csproj|solutionrelative:myapp.application.tests\\orders\\createordercommandhandlertests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CF0B8C6D-B3D7-4FF7-845B-3D8EF1BC51CF}|MyApp.AppHost\\MyApp.AppHost.csproj|d:\\catho\\courses\\ms\\projet_fix\\myapp\\myapp.apphost\\apphost.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CF0B8C6D-B3D7-4FF7-845B-3D8EF1BC51CF}|MyApp.AppHost\\MyApp.AppHost.csproj|solutionrelative:myapp.apphost\\apphost.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{1CA94D23-2CD7-4976-83A2-7B3A43D9D35C}|MyApp.ApiService\\MyApp.ApiService.csproj|d:\\catho\\courses\\ms\\projet_fix\\myapp\\myapp.apiservice\\controllers\\pharmaciescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1CA94D23-2CD7-4976-83A2-7B3A43D9D35C}|MyApp.ApiService\\MyApp.ApiService.csproj|solutionrelative:myapp.apiservice\\controllers\\pharmaciescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{1CA94D23-2CD7-4976-83A2-7B3A43D9D35C}|MyApp.ApiService\\MyApp.ApiService.csproj|d:\\catho\\courses\\ms\\projet_fix\\myapp\\myapp.apiservice\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1CA94D23-2CD7-4976-83A2-7B3A43D9D35C}|MyApp.ApiService\\MyApp.ApiService.csproj|solutionrelative:myapp.apiservice\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{7C12AE0E-B3AD-4F37-9DDB-D8A42928AA1E}|MyApp.Application\\MyApp.Application.csproj|d:\\catho\\courses\\ms\\projet_fix\\myapp\\myapp.application\\orders\\commands\\createorder\\createordercommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7C12AE0E-B3AD-4F37-9DDB-D8A42928AA1E}|MyApp.Application\\MyApp.Application.csproj|solutionrelative:myapp.application\\orders\\commands\\createorder\\createordercommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{87D7C66A-7AE7-452A-B114-D09DDDBE6660}|MyApp.WebApp\\MyApp.WebApp.csproj|d:\\catho\\courses\\ms\\projet_fix\\myapp\\myapp.webapp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{87D7C66A-7AE7-452A-B114-D09DDDBE6660}|MyApp.WebApp\\MyApp.WebApp.csproj|solutionrelative:myapp.webapp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{7C12AE0E-B3AD-4F37-9DDB-D8A42928AA1E}|MyApp.Application\\MyApp.Application.csproj|d:\\catho\\courses\\ms\\projet_fix\\myapp\\myapp.application\\pharmacies\\queries\\getpharmacybymanageruserid\\getpharmacybymanageruseridqueryhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7C12AE0E-B3AD-4F37-9DDB-D8A42928AA1E}|MyApp.Application\\MyApp.Application.csproj|solutionrelative:myapp.application\\pharmacies\\queries\\getpharmacybymanageruserid\\getpharmacybymanageruseridqueryhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7C12AE0E-B3AD-4F37-9DDB-D8A42928AA1E}|MyApp.Application\\MyApp.Application.csproj|d:\\catho\\courses\\ms\\projet_fix\\myapp\\myapp.application\\pharmacies\\queries\\pharmacydetailsmapper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7C12AE0E-B3AD-4F37-9DDB-D8A42928AA1E}|MyApp.Application\\MyApp.Application.csproj|solutionrelative:myapp.application\\pharmacies\\queries\\pharmacydetailsmapper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7C12AE0E-B3AD-4F37-9DDB-D8A42928AA1E}|MyApp.Application\\MyApp.Application.csproj|d:\\catho\\courses\\ms\\projet_fix\\myapp\\myapp.application\\pharmacies\\queries\\getpharmacybymanageruserid\\getpharmacybymanageruseridquery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7C12AE0E-B3AD-4F37-9DDB-D8A42928AA1E}|MyApp.Application\\MyApp.Application.csproj|solutionrelative:myapp.application\\pharmacies\\queries\\getpharmacybymanageruserid\\getpharmacybymanageruseridquery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -55,67 +63,87 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.ApiService\\appsettings.json",
-              "RelativeDocumentMoniker": "MyApp.ApiService\\appsettings.json",
-              "ToolTip": "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.ApiService\\appsettings.json",
-              "RelativeToolTip": "MyApp.ApiService\\appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAZAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-11-02T19:25:17.561Z",
+              "Title": "PharmacyDetails.razor",
+              "DocumentMoniker": "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.WebApp\\Pages\\PharmacyDetails.razor",
+              "RelativeDocumentMoniker": "MyApp.WebApp\\Pages\\PharmacyDetails.razor",
+              "ToolTip": "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.WebApp\\Pages\\PharmacyDetails.razor",
+              "RelativeToolTip": "MyApp.WebApp\\Pages\\PharmacyDetails.razor",
+              "ViewState": "AgIAANEDAAAAAAAAAAAqwOMDAAA0AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-07T19:58:44.22Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.WebApp\\appsettings.json",
-              "RelativeDocumentMoniker": "MyApp.WebApp\\appsettings.json",
-              "ToolTip": "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.WebApp\\appsettings.json",
-              "RelativeToolTip": "MyApp.WebApp\\appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAA5AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-11-02T13:38:03.033Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Program.cs",
-              "DocumentMoniker": "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.WebApp\\Program.cs",
-              "RelativeDocumentMoniker": "MyApp.WebApp\\Program.cs",
-              "ToolTip": "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.WebApp\\Program.cs",
-              "RelativeToolTip": "MyApp.WebApp\\Program.cs",
-              "ViewState": "AgIAAEYAAAAAAAAAAAAYwFMAAAAEAAAAAAAAAA==",
+              "Title": "CreateOrderCommandHandlerTests.cs",
+              "DocumentMoniker": "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.Application.Tests\\Orders\\CreateOrderCommandHandlerTests.cs",
+              "RelativeDocumentMoniker": "MyApp.Application.Tests\\Orders\\CreateOrderCommandHandlerTests.cs",
+              "ToolTip": "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.Application.Tests\\Orders\\CreateOrderCommandHandlerTests.cs",
+              "RelativeToolTip": "MyApp.Application.Tests\\Orders\\CreateOrderCommandHandlerTests.cs",
+              "ViewState": "AgIAABEAAAAAAAAAAAAswCwAAAAaAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-02T12:32:33.872Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "AppHost.cs",
-              "DocumentMoniker": "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.AppHost\\AppHost.cs",
-              "RelativeDocumentMoniker": "MyApp.AppHost\\AppHost.cs",
-              "ToolTip": "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.AppHost\\AppHost.cs",
-              "RelativeToolTip": "MyApp.AppHost\\AppHost.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-02T11:40:01.422Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-07T15:53:12.978Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "Program.cs",
-              "DocumentMoniker": "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.ApiService\\Program.cs",
-              "RelativeDocumentMoniker": "MyApp.ApiService\\Program.cs",
-              "ToolTip": "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.ApiService\\Program.cs",
-              "RelativeToolTip": "MyApp.ApiService\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAnAAAAAAAAAA==",
+              "Title": "CreateOrderCommandHandler.cs",
+              "DocumentMoniker": "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.Application\\Orders\\Commands\\CreateOrder\\CreateOrderCommandHandler.cs",
+              "RelativeDocumentMoniker": "MyApp.Application\\Orders\\Commands\\CreateOrder\\CreateOrderCommandHandler.cs",
+              "ToolTip": "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.Application\\Orders\\Commands\\CreateOrder\\CreateOrderCommandHandler.cs",
+              "RelativeToolTip": "MyApp.Application\\Orders\\Commands\\CreateOrder\\CreateOrderCommandHandler.cs",
+              "ViewState": "AgIAAFMAAAAAAAAAAAD4v14AAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-02T11:39:55.099Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-07T15:52:34.284Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "GetPharmacyByManagerUserIdQueryHandler.cs",
+              "DocumentMoniker": "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.Application\\Pharmacies\\Queries\\GetPharmacyByManagerUserId\\GetPharmacyByManagerUserIdQueryHandler.cs",
+              "RelativeDocumentMoniker": "MyApp.Application\\Pharmacies\\Queries\\GetPharmacyByManagerUserId\\GetPharmacyByManagerUserIdQueryHandler.cs",
+              "ToolTip": "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.Application\\Pharmacies\\Queries\\GetPharmacyByManagerUserId\\GetPharmacyByManagerUserIdQueryHandler.cs",
+              "RelativeToolTip": "MyApp.Application\\Pharmacies\\Queries\\GetPharmacyByManagerUserId\\GetPharmacyByManagerUserIdQueryHandler.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-07T11:59:52.909Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "PharmaciesController.cs",
+              "DocumentMoniker": "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.ApiService\\Controllers\\PharmaciesController.cs",
+              "RelativeDocumentMoniker": "MyApp.ApiService\\Controllers\\PharmaciesController.cs",
+              "ToolTip": "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.ApiService\\Controllers\\PharmaciesController.cs",
+              "RelativeToolTip": "MyApp.ApiService\\Controllers\\PharmaciesController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-07T11:59:48.998Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "PharmacyDetailsMapper.cs",
+              "DocumentMoniker": "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.Application\\Pharmacies\\Queries\\PharmacyDetailsMapper.cs",
+              "RelativeDocumentMoniker": "MyApp.Application\\Pharmacies\\Queries\\PharmacyDetailsMapper.cs",
+              "ToolTip": "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.Application\\Pharmacies\\Queries\\PharmacyDetailsMapper.cs",
+              "RelativeToolTip": "MyApp.Application\\Pharmacies\\Queries\\PharmacyDetailsMapper.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-07T11:59:36.081Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "GetPharmacyByManagerUserIdQuery.cs",
+              "DocumentMoniker": "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.Application\\Pharmacies\\Queries\\GetPharmacyByManagerUserId\\GetPharmacyByManagerUserIdQuery.cs",
+              "RelativeDocumentMoniker": "MyApp.Application\\Pharmacies\\Queries\\GetPharmacyByManagerUserId\\GetPharmacyByManagerUserIdQuery.cs",
+              "ToolTip": "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.Application\\Pharmacies\\Queries\\GetPharmacyByManagerUserId\\GetPharmacyByManagerUserIdQuery.cs",
+              "RelativeToolTip": "MyApp.Application\\Pharmacies\\Queries\\GetPharmacyByManagerUserId\\GetPharmacyByManagerUserIdQuery.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAABwAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-07T11:59:30.376Z"
             }
           ]
         }

@@ -26,28 +26,24 @@ build_property.EnableCodeStyleSeverity =
 build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/CATHO/courses/MS/Projet_fix/MyApp/MyApp.WebApp/Components/AddTodoForm.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xBZGRUb2RvRm9ybS5yYXpvcg==
+[D:/CATHO/courses/MS/Projet_fix/MyApp/MyApp.WebApp/Components/PharmacyDashboard.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQaGFybWFjeURhc2hib2FyZC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/CATHO/courses/MS/Projet_fix/MyApp/MyApp.WebApp/Components/RedirectToLogin.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xSZWRpcmVjdFRvTG9naW4ucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/CATHO/courses/MS/Projet_fix/MyApp/MyApp.WebApp/Pages/Counter.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ291bnRlci5yYXpvcg==
-build_metadata.AdditionalFiles.CssScope = 
-
-[D:/CATHO/courses/MS/Projet_fix/MyApp/MyApp.WebApp/Pages/FetchData.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRmV0Y2hEYXRhLnJhem9y
+[D:/CATHO/courses/MS/Projet_fix/MyApp/MyApp.WebApp/Pages/Auth.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQXV0aC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/CATHO/courses/MS/Projet_fix/MyApp/MyApp.WebApp/Pages/Index.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXgucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/CATHO/courses/MS/Projet_fix/MyApp/MyApp.WebApp/Pages/Todo.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVG9kby5yYXpvcg==
+[D:/CATHO/courses/MS/Projet_fix/MyApp/MyApp.WebApp/Pages/PharmacyDetails.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGhhcm1hY3lEZXRhaWxzLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/CATHO/courses/MS/Projet_fix/MyApp/MyApp.WebApp/Shared/SurveyPrompt.razor]

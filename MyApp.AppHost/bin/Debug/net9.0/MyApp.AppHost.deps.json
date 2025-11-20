@@ -8,24 +8,20 @@
     ".NETCoreApp,Version=v9.0": {
       "MyApp.AppHost/1.0.0": {
         "dependencies": {
-          "Aspire.Dashboard.Sdk.win-x64": "9.5.2",
           "Aspire.Hosting.AppHost": "9.5.2",
           "Aspire.Hosting.Keycloak": "9.5.2-preview.1.25522.3",
-          "Aspire.Hosting.Orchestration.win-x64": "9.5.2",
           "Aspire.Hosting.SqlServer": "9.5.2"
         },
         "runtime": {
           "MyApp.AppHost.dll": {}
         }
       },
-      "Aspire.Dashboard.Sdk.win-x64/9.5.2": {},
       "Aspire.Hosting/9.5.2": {
         "dependencies": {
           "AspNetCore.HealthChecks.Uris": "9.0.0",
           "Google.Protobuf": "3.32.0",
           "Grpc.AspNetCore": "2.71.0",
           "Grpc.Net.ClientFactory": "2.71.0",
-          "Grpc.Tools": "2.72.0",
           "Humanizer.Core": "2.14.1",
           "JsonPatch.Net": "3.3.0",
           "KubernetesClient": "17.0.14",
@@ -100,7 +96,6 @@
           "Google.Protobuf": "3.32.0",
           "Grpc.AspNetCore": "2.71.0",
           "Grpc.Net.ClientFactory": "2.71.0",
-          "Grpc.Tools": "2.72.0",
           "Humanizer.Core": "2.14.1",
           "JsonPatch.Net": "3.3.0",
           "KubernetesClient": "17.0.14",
@@ -134,7 +129,6 @@
           "Google.Protobuf": "3.32.0",
           "Grpc.AspNetCore": "2.71.0",
           "Grpc.Net.ClientFactory": "2.71.0",
-          "Grpc.Tools": "2.72.0",
           "Humanizer.Core": "2.14.1",
           "JsonPatch.Net": "3.3.0",
           "KubernetesClient": "17.0.14",
@@ -161,7 +155,6 @@
           }
         }
       },
-      "Aspire.Hosting.Orchestration.win-x64/9.5.2": {},
       "Aspire.Hosting.SqlServer/9.5.2": {
         "dependencies": {
           "AspNetCore.HealthChecks.SqlServer": "9.0.0",
@@ -172,7 +165,6 @@
           "Google.Protobuf": "3.32.0",
           "Grpc.AspNetCore": "2.71.0",
           "Grpc.Net.ClientFactory": "2.71.0",
-          "Grpc.Tools": "2.72.0",
           "Humanizer.Core": "2.14.1",
           "JsonPatch.Net": "3.3.0",
           "KubernetesClient": "17.0.14",
@@ -270,8 +262,7 @@
       "Grpc.AspNetCore/2.71.0": {
         "dependencies": {
           "Google.Protobuf": "3.32.0",
-          "Grpc.AspNetCore.Server.ClientFactory": "2.71.0",
-          "Grpc.Tools": "2.72.0"
+          "Grpc.AspNetCore.Server.ClientFactory": "2.71.0"
         }
       },
       "Grpc.AspNetCore.Server/2.71.0": {
@@ -340,7 +331,6 @@
           }
         }
       },
-      "Grpc.Tools/2.72.0": {},
       "Humanizer.Core/2.14.1": {
         "runtime": {
           "lib/net6.0/Humanizer.dll": {
@@ -439,8 +429,7 @@
           "Microsoft.IdentityModel.Protocols.OpenIdConnect": "7.7.1",
           "Microsoft.SqlServer.Server": "1.0.0",
           "System.Configuration.ConfigurationManager": "9.0.4",
-          "System.Security.Cryptography.Pkcs": "9.0.4",
-          "System.Text.Json": "9.0.5"
+          "System.Security.Cryptography.Pkcs": "9.0.4"
         },
         "runtime": {
           "lib/net9.0/Microsoft.Data.SqlClient.dll": {
@@ -948,8 +937,7 @@
       },
       "Microsoft.Identity.Client/4.73.1": {
         "dependencies": {
-          "Microsoft.IdentityModel.Abstractions": "7.7.1",
-          "System.Diagnostics.DiagnosticSource": "6.0.1"
+          "Microsoft.IdentityModel.Abstractions": "7.7.1"
         },
         "runtime": {
           "lib/net8.0/Microsoft.Identity.Client.dll": {
@@ -1154,8 +1142,7 @@
       "Nerdbank.Streams/2.12.87": {
         "dependencies": {
           "Microsoft.VisualStudio.Threading.Only": "17.13.61",
-          "Microsoft.VisualStudio.Validation": "17.8.8",
-          "System.IO.Pipelines": "8.0.0"
+          "Microsoft.VisualStudio.Validation": "17.8.8"
         },
         "runtime": {
           "lib/net8.0/Nerdbank.Streams.dll": {
@@ -1197,8 +1184,7 @@
           "Microsoft.VisualStudio.Threading.Only": "17.13.61",
           "Microsoft.VisualStudio.Validation": "17.8.8",
           "Nerdbank.Streams": "2.12.87",
-          "Newtonsoft.Json": "13.0.3",
-          "System.IO.Pipelines": "8.0.0"
+          "Newtonsoft.Json": "13.0.3"
         },
         "runtime": {
           "lib/net8.0/StreamJsonRpc.dll": {
@@ -1272,11 +1258,6 @@
           }
         }
       },
-      "System.Diagnostics.DiagnosticSource/6.0.1": {
-        "dependencies": {
-          "System.Runtime.CompilerServices.Unsafe": "6.0.0"
-        }
-      },
       "System.Diagnostics.EventLog/9.0.9": {
         "runtime": {
           "lib/net9.0/System.Diagnostics.EventLog.dll": {
@@ -1313,7 +1294,6 @@
           }
         }
       },
-      "System.IO.Pipelines/8.0.0": {},
       "System.Memory.Data/8.0.1": {
         "runtime": {
           "lib/net8.0/System.Memory.Data.dll": {
@@ -1322,7 +1302,6 @@
           }
         }
       },
-      "System.Runtime.CompilerServices.Unsafe/6.0.0": {},
       "System.Security.Cryptography.Pkcs/9.0.4": {
         "runtime": {
           "lib/net9.0/System.Security.Cryptography.Pkcs.dll": {
@@ -1347,7 +1326,6 @@
           }
         }
       },
-      "System.Text.Json/9.0.5": {},
       "YamlDotNet/16.3.0": {
         "runtime": {
           "lib/net8.0/YamlDotNet.dll": {
@@ -1363,13 +1341,6 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
-    },
-    "Aspire.Dashboard.Sdk.win-x64/9.5.2": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-59o0gxsY39F/SNslyuOXeh0bZMokh0inqHi848C7JGVJLNJ1P9p5M3vV+otWhnj9OJMDhvfAqUckslzTGLzXPA==",
-      "path": "aspire.dashboard.sdk.win-x64/9.5.2",
-      "hashPath": "aspire.dashboard.sdk.win-x64.9.5.2.nupkg.sha512"
     },
     "Aspire.Hosting/9.5.2": {
       "type": "package",
@@ -1391,13 +1362,6 @@
       "sha512": "sha512-bIBpa67AnqqCKvPqItMDEyb6qfByUUAvubqMLn9wJ3QFD14Kiwv+S4b+lzROKgbTrSNf3+l8fp6NvSChx5VKFQ==",
       "path": "aspire.hosting.keycloak/9.5.2-preview.1.25522.3",
       "hashPath": "aspire.hosting.keycloak.9.5.2-preview.1.25522.3.nupkg.sha512"
-    },
-    "Aspire.Hosting.Orchestration.win-x64/9.5.2": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-GQGlyoAntX+ng+VUuXSEKhhK9SazgBe4kC5Mia7sNclmY4sVCSCeAWAXDHYhKF3ayVbG9m/wR+PIgBy66nL6kQ==",
-      "path": "aspire.hosting.orchestration.win-x64/9.5.2",
-      "hashPath": "aspire.hosting.orchestration.win-x64.9.5.2.nupkg.sha512"
     },
     "Aspire.Hosting.SqlServer/9.5.2": {
       "type": "package",
@@ -1496,13 +1460,6 @@
       "sha512": "sha512-v0c8R97TwRYwNXlC8GyRXwYTCNufpDfUtj9la+wUrZFzVWkFJuNAltU+c0yI3zu0jl54k7en6u2WKgZgd57r2Q==",
       "path": "grpc.net.common/2.71.0",
       "hashPath": "grpc.net.common.2.71.0.nupkg.sha512"
-    },
-    "Grpc.Tools/2.72.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-BCiuQ03EYjLHCo9hqZmY5barsz5vvcz/+/ICt5wCbukaePHZmMPDGelKlkxWx3q+f5xOMNHa9zXQ2N6rQZ4B+w==",
-      "path": "grpc.tools/2.72.0",
-      "hashPath": "grpc.tools.2.72.0.nupkg.sha512"
     },
     "Humanizer.Core/2.14.1": {
       "type": "package",
@@ -1938,13 +1895,6 @@
       "path": "system.configuration.configurationmanager/9.0.4",
       "hashPath": "system.configuration.configurationmanager.9.0.4.nupkg.sha512"
     },
-    "System.Diagnostics.DiagnosticSource/6.0.1": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-KiLYDu2k2J82Q9BJpWiuQqCkFjRBWVq4jDzKKWawVi9KWzyD0XG3cmfX0vqTQlL14Wi9EufJrbL0+KCLTbqWiQ==",
-      "path": "system.diagnostics.diagnosticsource/6.0.1",
-      "hashPath": "system.diagnostics.diagnosticsource.6.0.1.nupkg.sha512"
-    },
     "System.Diagnostics.EventLog/9.0.9": {
       "type": "package",
       "serviceable": true,
@@ -1966,26 +1916,12 @@
       "path": "system.io.hashing/9.0.8",
       "hashPath": "system.io.hashing.9.0.8.nupkg.sha512"
     },
-    "System.IO.Pipelines/8.0.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-FHNOatmUq0sqJOkTx+UF/9YK1f180cnW5FVqnQMvYUN0elp6wFzbtPSiqbo1/ru8ICp43JM1i7kKkk6GsNGHlA==",
-      "path": "system.io.pipelines/8.0.0",
-      "hashPath": "system.io.pipelines.8.0.0.nupkg.sha512"
-    },
     "System.Memory.Data/8.0.1": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-BVYuec3jV23EMRDeR7Dr1/qhx7369dZzJ9IWy2xylvb4YfXsrUxspWc4UWYid/tj4zZK58uGZqn2WQiaDMhmAg==",
       "path": "system.memory.data/8.0.1",
       "hashPath": "system.memory.data.8.0.1.nupkg.sha512"
-    },
-    "System.Runtime.CompilerServices.Unsafe/6.0.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-/iUeP3tq1S0XdNNoMz5C9twLSrM/TH+qElHkXWaPvuNOt+99G75NrV0OS2EqHx5wMN7popYjpc8oTjC1y16DLg==",
-      "path": "system.runtime.compilerservices.unsafe/6.0.0",
-      "hashPath": "system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512"
     },
     "System.Security.Cryptography.Pkcs/9.0.4": {
       "type": "package",
@@ -2000,13 +1936,6 @@
       "sha512": "sha512-o94k2RKuAce3GeDMlUvIXlhVa1kWpJw95E6C9LwW0KlG0nj5+SgCiIxJ2Eroqb9sLtG1mEMbFttZIBZ13EJPvQ==",
       "path": "system.security.cryptography.protecteddata/9.0.4",
       "hashPath": "system.security.cryptography.protecteddata.9.0.4.nupkg.sha512"
-    },
-    "System.Text.Json/9.0.5": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-rnP61ZfloTgPQPe7ecr36loNiGX3g1PocxlKHdY/FUpDSsExKkTxpMAlB4X35wNEPr1X7mkYZuQvW3Lhxmu7KA==",
-      "path": "system.text.json/9.0.5",
-      "hashPath": "system.text.json.9.0.5.nupkg.sha512"
     },
     "YamlDotNet/16.3.0": {
       "type": "package",

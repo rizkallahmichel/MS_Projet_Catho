@@ -68,7 +68,7 @@
               "RelativeDocumentMoniker": "MyApp.WebApp\\Pages\\PharmacyDetails.razor",
               "ToolTip": "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.WebApp\\Pages\\PharmacyDetails.razor",
               "RelativeToolTip": "MyApp.WebApp\\Pages\\PharmacyDetails.razor",
-              "ViewState": "AgIAAM0DAAAAAAAAAAAYwOMDAAA0AAAAAAAAAA==",
+              "ViewState": "AgIAANEDAAAAAAAAAAAqwOMDAAA0AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-11-07T19:58:44.22Z",
               "EditorCaption": ""
@@ -83,8 +83,7 @@
               "RelativeToolTip": "MyApp.Application.Tests\\Orders\\CreateOrderCommandHandlerTests.cs",
               "ViewState": "AgIAABEAAAAAAAAAAAAswCwAAAAaAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-07T15:53:12.978Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-07T15:53:12.978Z"
             },
             {
               "$type": "Document",

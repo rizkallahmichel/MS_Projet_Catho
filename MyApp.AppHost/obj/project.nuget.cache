@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "X1zHiebe6H4=",
+  "dgSpecHash": "7d6eR4Ho0UE=",
   "success": true,
   "projectFilePath": "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.AppHost\\MyApp.AppHost.csproj",
   "expectedPackageFiles": [
@@ -86,27 +86,13 @@
     "C:\\Users\\Dell\\.nuget\\packages\\streamjsonrpc\\2.22.11\\streamjsonrpc.2.22.11.nupkg.sha512",
     "C:\\Users\\Dell\\.nuget\\packages\\system.clientmodel\\1.6.1\\system.clientmodel.1.6.1.nupkg.sha512",
     "C:\\Users\\Dell\\.nuget\\packages\\system.configuration.configurationmanager\\9.0.4\\system.configuration.configurationmanager.9.0.4.nupkg.sha512",
-    "C:\\Users\\Dell\\.nuget\\packages\\system.diagnostics.diagnosticsource\\6.0.1\\system.diagnostics.diagnosticsource.6.0.1.nupkg.sha512",
     "C:\\Users\\Dell\\.nuget\\packages\\system.diagnostics.eventlog\\9.0.9\\system.diagnostics.eventlog.9.0.9.nupkg.sha512",
     "C:\\Users\\Dell\\.nuget\\packages\\system.identitymodel.tokens.jwt\\7.7.1\\system.identitymodel.tokens.jwt.7.7.1.nupkg.sha512",
     "C:\\Users\\Dell\\.nuget\\packages\\system.io.hashing\\9.0.8\\system.io.hashing.9.0.8.nupkg.sha512",
-    "C:\\Users\\Dell\\.nuget\\packages\\system.io.pipelines\\8.0.0\\system.io.pipelines.8.0.0.nupkg.sha512",
     "C:\\Users\\Dell\\.nuget\\packages\\system.memory.data\\8.0.1\\system.memory.data.8.0.1.nupkg.sha512",
-    "C:\\Users\\Dell\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0\\system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512",
     "C:\\Users\\Dell\\.nuget\\packages\\system.security.cryptography.pkcs\\9.0.4\\system.security.cryptography.pkcs.9.0.4.nupkg.sha512",
     "C:\\Users\\Dell\\.nuget\\packages\\system.security.cryptography.protecteddata\\9.0.4\\system.security.cryptography.protecteddata.9.0.4.nupkg.sha512",
-    "C:\\Users\\Dell\\.nuget\\packages\\system.text.json\\9.0.5\\system.text.json.9.0.5.nupkg.sha512",
     "C:\\Users\\Dell\\.nuget\\packages\\yamldotnet\\16.3.0\\yamldotnet.16.3.0.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "NU1900",
-      "level": "Warning",
-      "message": "Error occurred while getting package vulnerability data: Unable to load the service index for source https://api.nuget.org/v3/index.json.",
-      "projectPath": "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.AppHost\\MyApp.AppHost.csproj",
-      "warningLevel": 1,
-      "filePath": "D:\\CATHO\\courses\\MS\\Projet_fix\\MyApp\\MyApp.AppHost\\MyApp.AppHost.csproj",
-      "targetGraphs": []
-    }
-  ]
+  "logs": []
 }

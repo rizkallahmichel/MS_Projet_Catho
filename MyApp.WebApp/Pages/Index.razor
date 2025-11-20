@@ -79,6 +79,43 @@ else
     </div>
 
 
+    @if (isClient)
+    {
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body">
+                <div class="d-flex flex-column flex-lg-row gap-3 align-items-lg-end">
+                    <div class="flex-fill">
+                        <label class="form-label fw-semibold">Find a product</label>
+                        <input class="form-control"
+                               placeholder="e.g., ibuprofen, cough syrup, bandages"
+                               @bind="productSearchTerm"
+                               @bind:event="oninput" />
+                        <div class="form-text">We'll highlight pharmacies that currently stock this item.</div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="button"
+                                class="btn btn-primary"
+                                disabled="@IsProductSearchDisabled"
+                                @onclick="SearchProductsAsync">
+                            @if (isSearchingProducts)
+                            {
+                                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            }
+                            Search
+                        </button>
+                        <button type="button"
+                                class="btn btn-outline-secondary"
+                                disabled="@IsProductSearchResetDisabled"
+                                @onclick="ResetProductSearch">
+                            Clear
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+
     @if (!string.IsNullOrEmpty(alertMessage))
     {
         <div class="alert alert-@alertStyle alert-dismissible fade show" role="alert">
@@ -87,7 +124,111 @@ else
         </div>
     }
 
-    @if (isLoading)
+    @if (ShouldShowProductSearchResults)
+    {
+        <section class="mb-4">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div>
+                    <h2 class="h5 mb-1">Search results</h2>
+                    @if (!string.IsNullOrWhiteSpace(lastSearchedProductTerm))
+                    {
+                        <div class="text-muted small">Showing pharmacies carrying <strong>@lastSearchedProductTerm</strong>.</div>
+                    }
+                </div>
+                <button class="btn btn-link btn-sm text-decoration-none" type="button" @onclick="ResetProductSearch" disabled="@isSearchingProducts">
+                    Clear search
+                </button>
+            </div>
+
+            @if (isSearchingProducts)
+            {
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Searching pharmacies...</span>
+                    </div>
+                </div>
+            }
+            else if (!string.IsNullOrEmpty(productSearchError))
+            {
+                <div class="alert alert-danger" role="alert">
+                    <strong>We couldn't complete the search.</strong>
+                    <div class="small text-break">@productSearchError</div>
+                    <button class="btn btn-outline-danger btn-sm mt-2" type="button" @onclick="SearchProductsAsync">Try again</button>
+                </div>
+            }
+            else if (productMatches.Count == 0)
+            {
+                <div class="alert alert-info" role="alert">
+                    <strong>No pharmacies carry this product yet.</strong>
+                    <div class="small text-muted mt-2">
+                        Try another medicine name or clear the search to browse every pharmacy.
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="row g-4">
+                    @foreach (var match in productMatches)
+                    {
+                        <div class="col-12 col-lg-6">
+                            <div class="card shadow-sm h-100 border-0 border-top border-4 border-top-@GetStatusColor(match.IsActive)">
+                                <div class="card-body d-flex flex-column">
+                                    <div class="d-flex justify-content-between align-items-start gap-3">
+                                        <div>
+                                            <h5 class="mb-1">@match.PharmacyName</h5>
+                                            <p class="small text-muted mb-2">
+                                                @(!string.IsNullOrWhiteSpace(match.Address)
+                                                    ? match.Address
+                                                    : "No address provided.")
+                                            </p>
+                                            <span class="badge bg-@GetStatusColor(match.IsActive)">
+                                                @(match.IsActive ? "Active" : "Inactive")
+                                            </span>
+                                        </div>
+                                        <button class="btn btn-outline-secondary btn-sm" title="Open pharmacy" @onclick="@(() => NavigateToPharmacy(match.PharmacyId))">
+                                            <span class="oi oi-external-link" aria-hidden="true"></span>
+                                        </button>
+                                    </div>
+
+                                    <div class="mt-3">
+                                        <div class="small text-uppercase text-muted mb-2">Matching products (@match.Products.Count)</div>
+                                        <ul class="list-group list-group-flush border rounded">
+                                            @foreach (var product in match.Products)
+                                            {
+                                                <li class="list-group-item">
+                                                    <div class="d-flex justify-content-between align-items-start gap-3">
+                                                        <div class="flex-fill">
+                                                            <div class="fw-semibold">@product.Name</div>
+                                                            @if (!string.IsNullOrWhiteSpace(product.Description))
+                                                            {
+                                                                <div class="small text-muted text-truncate">@product.Description</div>
+                                                            }
+                                                        </div>
+                                                        <div class="text-end">
+                                                            <div class="fw-semibold">@product.Price.ToString("C")</div>
+                                                            <div class="small text-muted">Stock: @product.StockQuantity</div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </div>
+
+                                    <div class="mt-3">
+                                        <button class="btn btn-primary btn-sm" @onclick="@(() => NavigateToPharmacy(match.PharmacyId))">
+                                            <span class="oi oi-cart me-1" aria-hidden="true"></span>
+                                            Shop this pharmacy
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </section>
+    }
+    else if (isLoading)
     {
         <div class="text-center py-5">
             <div class="spinner-border text-primary" role="status">
@@ -273,6 +414,12 @@ else
     private string? errorMessage;
     private string? alertMessage;
     private string alertStyle = "success";
+    private readonly List<PharmacyProductMatch> productMatches = [];
+    private string productSearchTerm = string.Empty;
+    private string? lastSearchedProductTerm;
+    private string? productSearchError;
+    private bool isSearchingProducts;
+    private bool hasExecutedProductSearch;
     private bool showCreateForm;
     private bool isMutating;
     private Guid? confirmDeleteId;
@@ -306,6 +453,15 @@ else
         isClient = !isAdmin && !isPharmacyUser && HasRole(user, "client");
         assignedPharmacyId = isPharmacyUser ? ResolvePharmacyId(user) : null;
     }
+
+    private bool IsProductSearchDisabled =>
+        isSearchingProducts || string.IsNullOrWhiteSpace(productSearchTerm);
+
+    private bool IsProductSearchResetDisabled =>
+        isSearchingProducts || (string.IsNullOrWhiteSpace(productSearchTerm) && !hasExecutedProductSearch);
+
+    private bool ShouldShowProductSearchResults =>
+        isClient && (hasExecutedProductSearch || isSearchingProducts);
 
     private async Task LoadPharmaciesAsync()
     {
@@ -420,6 +576,53 @@ else
     {
         alertMessage = message;
         alertStyle = style;
+    }
+
+    private async Task SearchProductsAsync()
+    {
+        if (isSearchingProducts)
+        {
+            return;
+        }
+
+        productSearchError = null;
+        var searchTerm = productSearchTerm?.Trim() ?? string.Empty;
+
+        if (string.IsNullOrWhiteSpace(searchTerm))
+        {
+            ResetProductSearch();
+            return;
+        }
+
+        isSearchingProducts = true;
+        try
+        {
+            var matches = await CmsApiClient.SearchPharmaciesByProductAsync(searchTerm);
+            productMatches.Clear();
+            productMatches.AddRange(matches);
+            lastSearchedProductTerm = searchTerm;
+            hasExecutedProductSearch = true;
+        }
+        catch (Exception ex)
+        {
+            productMatches.Clear();
+            productSearchError = ex.Message;
+            lastSearchedProductTerm = searchTerm;
+            hasExecutedProductSearch = true;
+        }
+        finally
+        {
+            isSearchingProducts = false;
+        }
+    }
+
+    private void ResetProductSearch()
+    {
+        productSearchTerm = string.Empty;
+        productMatches.Clear();
+        productSearchError = null;
+        lastSearchedProductTerm = null;
+        hasExecutedProductSearch = false;
     }
 
     private void NavigateToManagedPharmacyDetails()

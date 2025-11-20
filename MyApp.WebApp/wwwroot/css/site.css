@@ -12,6 +12,12 @@ a, .btn-link {
     color: #0071c1;
 }
 
+.navbar-brand-logo {
+    max-height: 40px;
+    width: auto;
+    display: block;
+}
+
 .btn-primary {
     color: #fff;
     background-color: #1b6ec2;

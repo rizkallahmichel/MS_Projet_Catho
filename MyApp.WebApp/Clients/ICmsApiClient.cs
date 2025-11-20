@@ -7,6 +7,7 @@ namespace MyApp.WebApp.Clients;
 public interface ICmsApiClient
 {
     Task<IReadOnlyList<PharmacySummary>> GetPharmaciesAsync(CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<PharmacyProductMatch>> SearchPharmaciesByProductAsync(string productName, CancellationToken cancellationToken = default);
     Task<PharmacyDetailsModel?> GetPharmacyAsync(Guid pharmacyId, CancellationToken cancellationToken = default);
     Task<Guid> CreatePharmacyAsync(CreatePharmacyRequest request, CancellationToken cancellationToken = default);
     Task UpdatePharmacyAsync(Guid pharmacyId, UpdatePharmacyRequest request, CancellationToken cancellationToken = default);

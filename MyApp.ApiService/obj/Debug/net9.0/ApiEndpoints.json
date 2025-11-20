@@ -471,5 +471,31 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "MyApp.ApiService.Controllers.PharmaciesController",
+    "Method": "SearchPharmaciesByProduct",
+    "RelativePath": "api/pharmacies/search-by-product",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "productName",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IReadOnlyList\u00601[[MyApp.Application.Pharmacies.Queries.SearchPharmaciesByProduct.PharmacyProductMatchDto, MyApp.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
   }
 ]

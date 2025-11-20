@@ -1,0 +1,58 @@
+﻿name: CI-CD
+
+on:
+  push:
+    branches: ["main", "master"]
+  pull_request:
+    branches: ["main", "master"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  build-test-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+          cache: true
+
+      - name: Restore
+        run: dotnet restore MyApp.sln
+
+      - name: Build
+        run: dotnet build MyApp.sln --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test MyApp.sln --configuration Release --no-build --logger "trx;LogFileName=test-results.trx"
+
+      - name: Upload test results
+        if: success() || failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: '**/TestResults/*.trx'
+          if-no-files-found: warn
+
+      - name: Publish ApiService
+        run: dotnet publish MyApp.ApiService/MyApp.ApiService.csproj -c Release -o ./artifacts/api
+
+      - name: Publish WebApp
+        run: dotnet publish MyApp.WebApp/MyApp.WebApp.csproj -c Release -o ./artifacts/web
+
+      - name: Upload publish artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: publish-artifacts
+          path: artifacts/**
+          if-no-files-found: error
